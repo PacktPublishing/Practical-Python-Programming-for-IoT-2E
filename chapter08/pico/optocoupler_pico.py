@@ -3,6 +3,8 @@ File: chapter08/pico/optocoupler_pico.py
 
 Using MicroPython & Pico to Control an Optocoupler Transistor.
 
+$ mpremote mount . run optocoupler_pico.py
+
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from time import sleep

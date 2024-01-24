@@ -3,6 +3,8 @@ File: chapter08/pico/transistor_pico.py
 
 Using MicroPython & Pico to Control a MOSFET Transistor.
 
+$ mpremote mount . run transistor_pico.py
+
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from time import sleep
