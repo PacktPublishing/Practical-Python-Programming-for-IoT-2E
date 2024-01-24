@@ -71,5 +71,5 @@ except KeyboardInterrupt:
 
 finally:
     pwm.deinit()  # Disable PWM
-    p.p.value(0)  # Ensure GPIO is Off
+    p.value(0)  # Ensure GPIO is Off
 
