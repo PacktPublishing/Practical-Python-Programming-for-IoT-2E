@@ -1,1 +1,1 @@
-pigpio==1.44
+pigpio==1.78
