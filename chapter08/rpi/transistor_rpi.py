@@ -1,5 +1,5 @@
 """
-File: chapter08/rpi//transistor_rpi.py
+File: chapter08/rpi/transistor_rpi.py
 
 Using a Raspberry & Python Control a MOSFET Transistor.
 
@@ -45,14 +45,12 @@ try:
     # Fade Out.
     print("\nFade Out...")
 
-    for duty_cycle_pc in range(100, -1, -1):                        # (4)
+    for duty_cycle_pc in range(100, -1, -1):                      # (4)
         # duty_cycle_pc range is 100 to 0. The first 'from' arguement is inclusive, while the 2nd 'to' argument is exclusive.
 
         pi.set_PWM_dutycycle(GPIO, duty_cycle_pc)
         print("Duty Cycle {}%".format(duty_cycle_pc))
         sleep(0.05)
-
-    # @TODO Removed, not  shure why it's needed sleep(2)
 
 except KeyboardInterrupt:
     print("Bye")

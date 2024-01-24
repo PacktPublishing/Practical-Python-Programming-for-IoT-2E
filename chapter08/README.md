@@ -22,3 +22,7 @@
 * PC817 Optocoupler <https://www.alldatasheet.com/datasheet-pdf/pdf/547581/SHARP/PC817X.html>>
 * SDR-5VDC-SL-C Relay <https://www.alldatasheet.com/datasheet-pdf/pdf/1131858/SONGLERELAY/SRD-5VDC-SL-C.html>
 * 1N4001 Diode <https://www.alldatasheet.com/datasheet-pdf/pdf/1022184/DIOTEC/1N4001.html>
+
+### Post Publication Updates and Errata
+
+None
