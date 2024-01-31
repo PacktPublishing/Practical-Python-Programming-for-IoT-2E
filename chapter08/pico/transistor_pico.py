@@ -1,7 +1,7 @@
 """
 chapter08/pico/transistor_pico.py
 
-Using MicroPython & Pico to Control a MOSFET Transistor.
+Using a Pico & MicroPython to Control a MOSFET Transistor.
 
 $ mpremote mount . run transistor_pico.py
 

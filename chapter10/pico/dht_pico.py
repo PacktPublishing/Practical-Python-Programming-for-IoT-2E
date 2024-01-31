@@ -1,7 +1,7 @@
 """
 File: chapter10/pico/dht_pico.py
 
-Using MicroPython & Pico to measure temperature with a DHT11 or DHT22 Sensor.
+Using a Pico & MicroPython to measure temperature with a DHT11 or DHT22 Sensor.
 
 $ mpremote mount . run dht_pico.py
 

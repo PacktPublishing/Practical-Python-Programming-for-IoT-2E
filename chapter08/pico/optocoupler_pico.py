@@ -1,7 +1,7 @@
 """
 chapter08/pico/optocoupler_pico.py
 
-Using MicroPython & Pico to Control an Optocoupler Transistor.
+Using a Pico & MicroPython to Control an Optocoupler Transistor.
 
 $ mpremote mount . run optocoupler_pico.py
 

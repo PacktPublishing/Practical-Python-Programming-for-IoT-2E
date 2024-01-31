@@ -1,12 +1,11 @@
 """
-chapter12/rpi/hc-sr501_rpi.py
+chapter12/pico/hc-sr501_pico.py
 
-Using a Raspberry & Python to read a HC-SR501 PIR Sensor.
+Using a Pico & MicroPython to read a HC-SR501 PIR Sensor.
 
-Dependencies:
-  pip3 install pigpio
+$ mpremote mount . run sr501_pico.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from signal import pause
 import pigpio

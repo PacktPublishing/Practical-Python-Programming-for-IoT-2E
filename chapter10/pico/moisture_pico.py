@@ -1,7 +1,7 @@
 """
 File: chapter10/pico/moisture_pico.py
 
-Using MicroPython & Pico to to detect moisture using ADC
+Using a Pico & MicroPython to to detect moisture using ADC
 
 $ mpremote mount . run moisture_pico.py
 

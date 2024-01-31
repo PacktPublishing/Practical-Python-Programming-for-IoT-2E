@@ -14,7 +14,10 @@
 
 * `pico` folder - Pico MicroPython Code
 
-@TODO
+  * `hc-sr04_pico.py` - Distance Measurement with the HC-SR04 Ultrasonic Sensor
+  * `hc-sr501_pico.py` - Movement Detection with the HC-SR501 PIR Sensor
+  * `hall_effect_digital_pico.py` - Hall-Effect Sensor Example - Switch or Latching Type
+  * `hall_effect_analog_pico.py` - Hall-Effect Sensor Example - Ratiometric Type
 
 ### Datasheets
 

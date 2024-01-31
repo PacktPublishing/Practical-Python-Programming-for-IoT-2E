@@ -1,7 +1,7 @@
 """
-File: chapter10/pico/ldr_measure_pico.py
+File: chapter10/pico/ldr_pico.py
 
-Using MicroPython & Pico to read LDR voltage using ADC
+Using a Pico & MicroPython to read an LDR using ADC
 
 $ mpremote mount . run ldr_pico.py
 

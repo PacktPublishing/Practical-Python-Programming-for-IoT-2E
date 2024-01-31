@@ -1,12 +1,11 @@
 """
-chapter12/rpi/hall_effect_analog_rpi.py
+chapter12/pico/hall_effect_analog_pico.py
 
-Using a Raspberry & Python with a Ratiometric Type AH3505 Hall-Effect Sensor.
+Using a Pico & MicroPython with a Ratiometric Type AH3505 Hall-Effect Sensor.
 
-Dependencies:
-  pip3 install pigpio adafruit-circuitpython-ads1x15
+$ mpremote mount . run hall_effect_analog_pico.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from time import sleep
 import pigpio

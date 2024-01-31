@@ -1,7 +1,7 @@
 """
 chapter10/pico/ldr_calibrate_pico.py
 
-Using MicroPython & Pico to measure maximum and minimum voltages using ADC
+Using a Pico & MicroPython to measure maximum and minimum voltages using ADC
 
 $ mpremote mount . run ldr_calibrate_pico.py
 

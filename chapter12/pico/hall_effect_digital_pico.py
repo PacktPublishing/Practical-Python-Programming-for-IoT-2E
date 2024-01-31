@@ -1,12 +1,11 @@
 """
-chapter12/rpi/hall_effect_digital_rpi.py
+chapter12/pico/hall_effect_digital_pico.py
 
-Using a Raspberry & Python with a Switch or Latching Type A4133 Hall-Effect Sensor (Active LOW).
+Using a Pico & MicroPython with a Switch or Latching Type A4133 Hall-Effect Sensor (Active LOW).
 
-Dependencies:
-  pip3 install pigpio
+$ mpremote mount . run hall_effect_digital_pico.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from time import sleep
 from signal import pause
