@@ -1,5 +1,5 @@
 """
-File: chapter10/rpi/ldr_measure_pico.py
+File: chapter10/pico/ldr_measure_pico.py
 
 Using MicroPython & Pico to read LDR voltage using ADC
 
