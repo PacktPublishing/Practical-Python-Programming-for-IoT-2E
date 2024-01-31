@@ -1,7 +1,7 @@
 """
 File: chapter10/rpi/dht_measure_rpi.py
 
-Measure temperature and humidity with DHT sensor.
+Using Python & Raspberry Pi to measure temperature with a DHT11 or DHT22 Sensor.
 
 Dependencies:
   pip3 install pigpio pigpio-dht

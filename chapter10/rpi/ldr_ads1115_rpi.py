@@ -1,7 +1,7 @@
 """
 chapter10/rpi/ads1115_rpi.py
 
-Read LDR voltage using ADS115 ADC
+Using Python & Raspberry Pi to read LDR voltage using ADS115 ADC
 
 Dependencies:
   pip3 install pigpio adafruit-circuitpython-ads1x15

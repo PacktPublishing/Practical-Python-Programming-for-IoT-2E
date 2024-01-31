@@ -1,7 +1,7 @@
 """
 chapter10/rpi/moisture_ads1115_calibrate_rpi.py
 
-Measure maximum and minimum voltages using ADS115 ADC
+Using Python & Raspberry Pi to measure maximum and minimum voltages using ADS115 ADC
 
 Dependencies:
   pip3 install adafruit-circuitpython-ads1x15

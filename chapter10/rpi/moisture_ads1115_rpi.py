@@ -1,7 +1,7 @@
 """
 chapter10/rpi/moisture_ads1115_rpi.py
 
-Detect moisture using ADS1115 ADC
+Using Python & Raspberry Pi to detect moisture using ADS1115 ADC
 
 Dependencies:
   pip3 install pigpio adafruit-circuitpython-ads1x15
