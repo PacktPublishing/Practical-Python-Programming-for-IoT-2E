@@ -1,5 +1,5 @@
 """
-File: chapter08/pico/optocoupler_pico.py
+chapter08/pico/optocoupler_pico.py
 
 Using MicroPython & Pico to Control an Optocoupler Transistor.
 

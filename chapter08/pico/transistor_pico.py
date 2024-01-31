@@ -1,5 +1,5 @@
 """
-File: chapter08/pico/transistor_pico.py
+chapter08/pico/transistor_pico.py
 
 Using MicroPython & Pico to Control a MOSFET Transistor.
 

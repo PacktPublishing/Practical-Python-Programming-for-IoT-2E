@@ -1,5 +1,5 @@
 """
-File: chapter08/rpi/optocoupler_rpi.py
+chapter08/rpi/optocoupler_rpi.py
 
 Using a Raspberry & Python Control an Optocoupler.
 

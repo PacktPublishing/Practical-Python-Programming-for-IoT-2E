@@ -1,5 +1,5 @@
 """
-File: chapter08/rpi/transistor_rpi.py
+chapter08/rpi/transistor_rpi.py
 
 Using a Raspberry & Python Control a MOSFET Transistor.
 
