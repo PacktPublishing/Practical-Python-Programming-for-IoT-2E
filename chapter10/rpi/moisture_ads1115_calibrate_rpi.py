@@ -39,7 +39,6 @@ def sample(samples):
     volts_sum = 0
     for c in range(SAMPLES):
         volts = analog_channel.voltage
-        #print("Sample #{} = {:0.4f} volts".format(c, volts))
         volts_sum += volts
         sleep(0.01)
 
@@ -63,10 +62,10 @@ if __name__ == '__main__':
         print("Please wait...\n")
         max_volts = sample(SAMPLES)
 
-        output += "# Voltage range is {:0.4f}\n".format(max_volts - min_volts)
-        output += ("MIN_VOLTS = {:0.4f}\n".format(min_volts))
-        output += ("MAX_VOLTS = {:0.4f}\n".format(max_volts))
-
+        output += f"# Voltage range is {max_volts - min_volts:0.4f}\n"
+        output += f"MIN_VOLTS = {min_volts:0.4f}\n"
+        output += f"MAX_VOLTS = {max_volts:0.4f}\n"
+        
         with open(OUTPUT_FILE, "w") as f:
             f.write(output)
 

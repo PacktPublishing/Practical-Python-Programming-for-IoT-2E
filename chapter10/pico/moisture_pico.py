@@ -1,32 +1,30 @@
 """
-chapter10/rpi/moisture_ads1115_rpi.py
+File: chapter10/rpi/moisture_pico.py
 
-Using Python & Raspberry Pi to detect moisture using ADS1115 ADC
+Using MicroPython & Pico to to detect moisture using ADC
 
-Dependencies:
-  pip3 install pigpio adafruit-circuitpython-ads1x15
+$ mpremote mount . run moisture_pico.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
+from machine import Pin, ADC
 from time import sleep
-import pigpio
-import moisture_calibration_config_rpi as calibration                            # (1)  <<<< DIFFERENCE: importing moisture calibration file.
+import ldr_calibration_config_pico as calibration                                # (1)   <<<< DIFFERENCE: importing moisture calibration file.
 
-# Below imports are part of Circuit Python and Blinka
-@TODO Update ADS1115 Lib to https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
-import board
-import busio
-import adafruit_ads1x15.ads1115 as ADS
-from adafruit_ads1x15.analog_in import AnalogIn
+# ADC Channel	GPIO
+# -----------   ----
+# 0	            26
+# 1	            27
+# 2	            28
+ADC_CHANNEL = 0
 
-pi = pigpio.pi()
+adc = ADC(ADC_CHANNEL)
 
 # LED is connected to this GPIO Pin
 LED_GPIO = 21
 
-# Configure LED pin and start wiht LED Off
-pi.set_mode(LED_GPIO, pigpio.OUTPUT)
-pi.write(LED_GPIO, pigpio.LOW) # LED Off
+# Configure LED Pin and start with LED Off
+led = Pin(LED_GPIO, mode=Pin.OUT, value=0)
 
 # Voltage readings from ADS1115 when
 # probe is immersed (wet), and when not immersed (dry)
@@ -37,12 +35,6 @@ DRY_VOLTS = calibration.MIN_VOLTS
 # global variable triggered = True or False
 TRIGGER_VOLTS = WET_VOLTS - ((WET_VOLTS - DRY_VOLTS) / 2)                   # (3) <<<< DIFFERENCE: Variable names changed.
 TRIGGER_BUFFER = 0.25                                                       # (4)
-
-
-# Create the I2C bus & ADS object.
-i2c = busio.I2C(board.SCL, board.SDA)
-ads = ADS.ADS1115(i2c)
-analog_channel = AnalogIn(ads, ADS.P0)  #ADS.P0 --> A0
 
 # "triggered" is set to True or False as the voltage
 # read by the ADS1115 passes over it's
@@ -63,14 +55,18 @@ def update_trigger(volts):
         triggered = True
 
 
-if __name__ == '__main__':
+def main():
+    """
+    Program Entry Point.
+    """
 
     trigger_text = f"{TRIGGER_VOLTS:0.4f} +/- {TRIGGER_BUFFER}"
 
     try:
         while True:                                                        # (6)
-            # Read voltage from ADS1115 channel
-            volts = analog_channel.voltage
+            # Read voltage from ADC
+            reading = adc.read_u16()
+            volts = 3.3 * (reading / 65535)
 
             update_trigger(volts)
 
@@ -78,11 +74,11 @@ if __name__ == '__main__':
             print(output)
 
             # Switch LED on or off based on trigger.
-            pi.write(LED_GPIO, triggered)                                 # (7)
+            led.value(triggered)                                          # (7)
             sleep(0.05)
 
     except KeyboardInterrupt:
-        i2c.deinit()
         print("Switching LED Off")
-        pi.write(LED_GPIO, pigpio.LOW) # LED Off
-        pi.stop() # PiGPIO Cleanup
+        led.off()
+
+main()

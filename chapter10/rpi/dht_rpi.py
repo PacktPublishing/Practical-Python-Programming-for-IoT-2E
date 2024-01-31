@@ -1,5 +1,5 @@
 """
-File: chapter10/rpi/dht_measure_rpi.py
+File: chapter10/rpi/dht_rpi.py
 
 Using Python & Raspberry Pi to measure temperature with a DHT11 or DHT22 Sensor.
 
