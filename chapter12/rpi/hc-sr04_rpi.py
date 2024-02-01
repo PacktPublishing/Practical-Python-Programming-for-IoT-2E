@@ -108,7 +108,7 @@ if __name__ == "__main__":
                 print("Timeout")
             else:
                 distance_inches = distance_cms/2.54
-                print("{:0.4f}cm, {:0.4f}\"".format(distance_cms, distance_inches))
+                print(f"{distance_cms:0.4f}cm, {distance_inches:0.4f}\"")
 
             sleep(0.25) # Sleep a little between readings. (Note - We shouldn't query the sensor more than once every 60ms.)
 

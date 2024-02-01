@@ -26,7 +26,7 @@ try:
 
     print(f"Temperature: {temperature_c:.2f} C")
     print(f"Temperature: {temperature_f:.2f} F")
-    print(f"Humidity: {humidity_pc:.2f} F")
+    print(f"Humidity: {humidity_pc:.2f} %")
 
     # There is no equivalent for taking    # (4)
     # multiple samples using the inbuilt

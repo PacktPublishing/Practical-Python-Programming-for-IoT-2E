@@ -7,8 +7,8 @@ $ mpremote mount . run sr04_pico.py
 
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-from time import sleep, time
-import pigpio
+from time import time, sleep_us, sleep_ms, ticks_ms, ticks_diff
+from machine import Pin
 
 # REMEMBER the HC-SR04 is a 5-volt
 # device so you MUST use a voltage
@@ -25,13 +25,9 @@ VELOCITY = 343                                         # (2)
 TIMEOUT_SECS = 0.1   # based on max distance of 4m     # (3)
 SENSOR_TIMEOUT  = -1
 
-pi = pigpio.pi()
-
 # Initialise GPIOs
-pi.set_mode(TRIG_GPIO, pigpio.OUTPUT)
-pi.write(TRIG_GPIO, pigpio.LOW)
-pi.set_mode(ECHO_GPIO, pigpio.INPUT)
-pi.set_pull_up_down(ECHO_GPIO, pigpio.PUD_DOWN)
+trigger_pin = Pin(TRIG_GPIO, mode=Pin.OUT, value=0)
+echo_pin = Pin(ECHO_GPIO, mode=Pin.IN, pull=Pin.PULL_DOWN)
 
 # For timing our ultrasonic pulse
 echo_callback = None                                   # (4)
@@ -47,26 +43,27 @@ def trigger():                                         # (5)
     reading_success = False
 
     # Start ultrasonic pulses
-    pi.write(TRIG_GPIO, pigpio.HIGH)                   # (6)
-    sleep(1 / 1000000) # Pause 10 microseconds
-    pi.write(TRIG_GPIO, pigpio.LOW)
+    trigger_pin.high()                                 # (6)
+    sleep_us(10) # Pause 10 microseconds
+    trigger_pin.low()
 
 
 def get_distance_cms():                                # (7)
     """ Get distance in centimeters """
     trigger()
 
-    timeout = time() + TIMEOUT_SECS                    # (8)
+    timeout = ticks_ms() + (TIMEOUT_SECS * 1000)       # (8)
+
     while not reading_success:
-      if time() > timeout:
+      if ticks_diff(ticks_ms(), timeout) < 0:
           return SENSOR_TIMEOUT
-      sleep(0.01)
+      sleep_ms(10)
 
-    # Elapsed time in microseconds. Divide by 2 to get time from sensor to object.
-    elapsed_microseconds = pigpio.tickDiff(tick_start, tick_end) / 2                        # (9)
-
+    # Elapsed time in milliseconds. Divide by 2 to get time from sensor to object.
+    elapsed_milliseconds = ticks_diff(tick_start, tick_end) / 2                             # (9)
+    
     # Convert to seconds
-    elapsed_seconds = elapsed_microseconds / 1000000
+    elapsed_seconds = elapsed_milliseconds / 1000
 
     # Calculate distance in meters (d = v * t)
     distance_in_meters = elapsed_seconds * VELOCITY                                         # (10)
@@ -77,40 +74,37 @@ def get_distance_cms():                                # (7)
     return distance_in_centimeters
 
 
-def echo_handler(gpio, level, tick):                                                        # (11)
-    """ Called whenever a level change occurs on ECHO_GPIO Pin.
-      Parameters defined by PiGPIO pi.callback() """
+def echo_handler(pin):                                                                      # (11)
+    """ Called whenever a level change occurs on ECHO_GPIO Pin. """
     global tick_start, tick_end, reading_success
 
-    if level == pigpio.HIGH:
-        tick_start = tick # Start Timer                                                     # (12)
+    if pin.value == 1:
+        tick_start = ticks_ms() # Start Timer                                               # (12)
 
-    elif level == pigpio.LOW:
-        tick_end = tick # End Timer                                                         # (13)
+    elif pin.value == 0:
+        tick_end = ticks_ms()   # End Timer                                                 # (13)
         reading_success = True
 
 
 # Register ECHO Pin Callback
-echo_callback = pi.callback(ECHO_GPIO, pigpio.EITHER_EDGE, echo_handler)                    # (14)
+echo_callback = echo_pin.irq(handler=echo_handler, trigger=Pin.IRQ_RISING | Pin.IRQ_FALLING)    # (14)
+
+def main():
+    """
+    Program Main Entry Point.
+    """
+
+    while True:                                                                             # (15)
+
+        distance_cms = get_distance_cms()
+
+        if distance_cms == SENSOR_TIMEOUT:
+            print("Timeout")
+        else:
+            distance_inches = distance_cms/2.54
+            print(f"{distance_cms:0.4f}cm, {distance_inches:0.4f}\"")
+
+        sleep_ms(250) # Sleep a little between readings. (Note - We shouldn't query the sensor more than once every 60ms.)
 
 
-if __name__ == "__main__":
-
-    try:
-        print("Press Control + C to Exit")
-
-        while True:                                                                         # (15)
-
-            distance_cms = get_distance_cms()
-
-            if distance_cms == SENSOR_TIMEOUT:
-                print("Timeout")
-            else:
-                distance_inches = distance_cms/2.54
-                print("{:0.4f}cm, {:0.4f}\"".format(distance_cms, distance_inches))
-
-            sleep(0.25) # Sleep a little between readings. (Note - We shouldn't query the sensor more than once every 60ms.)
-
-    except KeyboardInterrupt:
-        echo_callback.cancel()
-        pi.stop()
+main()

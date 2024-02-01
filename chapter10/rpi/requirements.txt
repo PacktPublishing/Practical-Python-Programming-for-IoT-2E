@@ -1,0 +1,2 @@
+pigpio==1.78
+pigpio-dht==0.3.6
