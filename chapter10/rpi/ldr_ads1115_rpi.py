@@ -13,7 +13,6 @@ import pigpio
 import ldr_calibration_config_rpi as calibration                           # (1)
 
 # Below imports are part of Circuit Python and Blinka
-@TODO Update ADS1115 Lib to https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
 import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS
