@@ -1,24 +1,33 @@
 """
-File: chapter10/pico/ldr_pico.py
+File: chapter10/pico/ldr_ads1115_pico.py
 
-Using a Pico & MicroPython to read an LDR using ADC
+Using a Pico & MicroPython to read an LDR  using an ADS1115 ADC
 
-$ mpremote mount . run ldr_pico.py
+$ mpremote mount . run ldr_ads1115_pico.py
 
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-from machine import Pin, ADC
+from machine import Pin, I2C
 from time import sleep_ms
-import ldr_calibration_config_pico as calibration                     # (1)
+from ADS1115_pico import ADS1115
+import ldr_calibration_config_ads1115_pico as calibration                     # (1)
 
-# ADC Channel	GPIO
+# ADC Channel	ADS1115
 # -----------   ----
-# 0	            26
-# 1	            27
-# 2	            28
+# 0	            A0
+# 1	            A1
+# 2	            A2
+# 3	            A3
+
 ADC_CHANNEL = 0
 
-adc = ADC(ADC_CHANNEL)
+# I2C Parameters
+BUS_ID = 0
+SCL_GPIO = 17
+SDA_GPIO = 16
+
+i2c = I2C(BUS_ID, scl=Pin(SCL_GPIO), sda=Pin(SDA_GPIO))
+adc = ADS1115(i2c)
 
 # LED is connected to this GPIO Pin
 LED_GPIO = 21
@@ -65,12 +74,11 @@ def main():
     try:
         while True:                                                   # (6)
             # Read voltage from ADC
-            reading = adc.read_u16()
-            volts = 3.3 * (reading / 65535)
+            reading = adc.read(ADC_CHANNEL)
+            
+            update_trigger(reading.volts)
 
-            update_trigger(volts)
-
-            output = f"LDR Reading volts={volts:>5.3f}, trigger at {trigger_text}, triggered={triggered}"
+            output = f"LDR Reading volts={reading.volts:>5.3f}, trigger at {trigger_text}, triggered={triggered}"
             print(output)
 
             # Switch LED on or off based on trigger.

@@ -8,8 +8,9 @@ This module was created and tested for the following configuration:
     - Raspberry Pi Pico / Pico W
 
 Example Usage:
-    import utime
+    from time import sleep_ms
     from machine import I2C, Pin
+    from ADS1115_pico import ADS1115
     
     CHANNEL = 0 # ADS1115 A0
     BUS_ID = 0
@@ -22,10 +23,8 @@ Example Usage:
     while True:
         reading = ads.read(CHANNEL)
         print(reading)
-        utime.sleep(0.5)
+        sleep_ms(500)
 """
-import utime
-from machine import I2C, Pin
 
 """
 With gain of 4.096 and max raw value of 32767,

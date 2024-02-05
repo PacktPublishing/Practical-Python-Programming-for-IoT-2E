@@ -8,7 +8,7 @@ $ mpremote mount . run moisture_calibrate_pico.py
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from machine import ADC
-from time import sleep
+from time import sleep, sleep_ms
 
 # ADC Channel	GPIO
 # -----------   ----
@@ -18,6 +18,7 @@ from time import sleep
 ADC_CHANNEL = 0
 
 adc = ADC(ADC_CHANNEL)
+
 # Number of voltage readings to sample
 SAMPLES = 100
 
@@ -41,7 +42,7 @@ def sample(samples):
         reading = adc.read_u16()
         volts = 3.3 * (reading / 65535)
         volts_sum += volts
-        sleep(0.01)
+        sleep_ms(10)
 
     return volts_sum / samples
 
