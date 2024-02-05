@@ -49,7 +49,7 @@ def sample(samples):
 
     for c in range(SAMPLES):
         reading = adc.read(ADC_CHANNEL)
-        volts_sum += reading.volts
+        volts_sum += reading['volts']
         sleep_ms(10)
 
     return volts_sum / samples

@@ -76,9 +76,9 @@ def main():
             # Read voltage from ADC
             reading = adc.read(ADC_CHANNEL)
 
-            update_trigger(reading.volts)
+            update_trigger(reading['volts'])
 
-            output = f"LDR Reading volts={reading.volts:>5.3f}, trigger at {trigger_text}, triggered={triggered}"
+            output = f"LDR Reading volts={reading['volts']:>5.3f}, trigger at {trigger_text}, triggered={triggered}"
             print(output)
 
             # Switch LED on or off based on trigger.
