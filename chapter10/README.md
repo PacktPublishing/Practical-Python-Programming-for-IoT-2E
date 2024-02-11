@@ -18,15 +18,6 @@
 * `pico` folder - Pico MicroPython Code
   
   * `dht_pico.py` - Measure temperature and humidity with a DHT11 or DHT22 Sensor
-  * `ldr_pico.py` - Detect light and dark with an LDR using inbuilt Pico ADC
-  * `ldr_calibrate_pico.py` - Calebrate LDR using inbuilt Pico ADC
-  * `ldr_calibration_config_pico.py` - LDR calibration (will be overwritten by `ldr_calibrate_pico.py`)
-  * `moisture_pico.py` - Detect moisture using inbuilt Pico ADC
-  * `moisture_calibrate_pico.py` - Calibrate moisture detection using inbuilt Pico ADC
-  * `moisture_calibration_config_pico.py` - Moisture detection calibration (will be overwritten by `moisture_calibrate_pico.py`)
-
-* `pico\ADS1115` folder - Pico MicroPython Code
-
   * `ADS1115_pico.py` - A simple module for reading analog input from an ADS1115 ADC
   * `ldr_ads1115_pico.py` - Detect light and dark with an LDR using an ADS1115 ADC
   * `ldr_calibrate_ads1115_pico.py` - Calebrate LDR using an ADS1115 ADC
@@ -35,6 +26,16 @@
   * `moisture_calibrate_ads1115_pico.py` - Calibrate moisture detection using an ADS1115 ADC
   * `moisture_calibration_config_ads1115_pico.py` - Moisture detection calibration (will be overwritten by `moisture_calibrate_ads1115_pico.py`)
 
+* `pico\pico_adc` folder - Pico MicroPython Code
+
+  * `ldr_pico.py` - Detect light and dark with an LDR using inbuilt Pico ADC
+  * `ldr_calibrate_pico.py` - Calebrate LDR using inbuilt Pico ADC
+  * `ldr_calibration_config_pico.py` - LDR calibration (will be overwritten by `ldr_calibrate_pico.py`)
+  * `moisture_pico.py` - Detect moisture using inbuilt Pico ADC
+  * `moisture_calibrate_pico.py` - Calibrate moisture detection using inbuilt Pico ADC
+  * `moisture_calibration_config_pico.py` - Moisture detection calibration (will be overwritten by `moisture_calibrate_pico.py`)
+
+  
 ### Datasheets
 
 None

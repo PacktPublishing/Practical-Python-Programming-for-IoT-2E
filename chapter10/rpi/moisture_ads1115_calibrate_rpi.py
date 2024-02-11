@@ -4,14 +4,14 @@ chapter10/rpi/moisture_ads1115_calibrate_rpi.py
 Using a Raspberry Pi & Python to measure maximum and minimum voltages using ADS115 ADC
 
 Dependencies:
+  # https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
   pip3 install adafruit-circuitpython-ads1x15
 
 Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 from time import sleep
 
-# Below imports are part of Circuit Python and Blinka
-@TODO Update ADS1115 Lib to https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
+# Below imports are part of Circuit Python ADS1115 Driver.
 import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS
@@ -54,11 +54,13 @@ if __name__ == '__main__':
     max_volts = 0
 
     try:
-        input("Dry probe and press Enter")
+        print("Dry probe. Starting measurement in 4 seconds...")
+        sleep(4)
         print("Please wait...\n")
         min_volts = sample(SAMPLES)
 
-        input("Wet probe and press Enter")
+        print("Wet probe. Starting measurement in 4 seconds...")
+        sleep(4)
         print("Please wait...\n")
         max_volts = sample(SAMPLES)
 

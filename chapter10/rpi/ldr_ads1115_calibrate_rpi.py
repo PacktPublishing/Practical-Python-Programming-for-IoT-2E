@@ -4,14 +4,14 @@ chapter10/rpi/ldr_ads1115_calibrate_rpi.py
 Using a Raspberry Pi & Python to measure maximum and minimum voltages using ADS1115 ADC
 
 Dependencies:
+  # https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
   pip3 install adafruit-circuitpython-ads1x15
 
 Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 from time import sleep
 
-# Below imports are part of Circuit Python and Blinka
-@TODO Update ADS1115 Lib to https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
+# Below imports are part of Circuit Python ADS1115 Driver.
 import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS
@@ -56,11 +56,13 @@ if __name__ == '__main__':
     max_volts = 0
 
     try:
-        input("Place LDR in the light and press Enter")
+        print("Place LDR in the light. Starting measurement in 4 seconds...")
+        sleep(4)
         print("Please wait...\n")
         max_volts = sample(SAMPLES)
 
-        input("Place LDR in dark and press Enter")
+        print("Place LDR in the dark. Starting measurement in 4 seconds...")
+        sleep(4)
         print("Please wait...\n")
         min_volts = sample(SAMPLES)
 

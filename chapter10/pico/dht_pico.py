@@ -9,12 +9,12 @@ Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 
 # dht is a MicroPython inbuilt library.
-from dht import DHT11, DHT22               # (1)
+from dht import DHT11, DHT22                                      # (1)
 from machine import Pin
 
 SENSOR_GPIO = 21
-sensor = DHT11(Pin(SENSOR_GPIO))           # (2)
-#sensor = DHT22(Pin(SENSOR_GPIO))
+sensor = DHT11(Pin(SENSOR_GPIO, mode=Pin.IN, pull=Pin.PULL_UP))   # (2)
+#sensor = DHT22(Pin(SENSOR_GPIO, mode=Pin.IN, pull=Pin.PULL_UP))
 
 try:
     # Ask sensor to capture a measurement.

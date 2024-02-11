@@ -1,5 +1,5 @@
 """
-chapter10/pico/moisture_calibrate_pico.py
+chapter10/pico/pico_adc/moisture_calibrate_pico.py
 
 Using a Pico & MicroPython to measure maximum and minimum voltages using ADC
 
