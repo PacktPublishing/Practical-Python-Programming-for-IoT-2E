@@ -2,7 +2,7 @@
 
 The code in this repository accompanies the _Book Practical Python Programming for IoT 2nd Edition_, published by Packt.
 
-The code repository for the 1st Edition can be found [here on GitHub](https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT-2E).
+The code repository for the _1st Edition_ can be found [here](https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT).
 
 ## Repository Contents
 
