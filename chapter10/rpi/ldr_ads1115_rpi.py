@@ -4,6 +4,7 @@ chapter10/rpi/ldr_ads1115_rpi.py
 Using a Raspberry Pi & Python to read LDR voltage using ADS115 ADC
 
 Dependencies:
+  # https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
   pip3 install pigpio adafruit-circuitpython-ads1x15
 
 Built and tested with Python 3.11.22 on Raspberry Pi 5
@@ -12,7 +13,7 @@ from time import sleep
 import pigpio
 import ldr_calibration_config_rpi as calibration                           # (1)
 
-# Below imports are part of Circuit Python and Blinka
+# Below imports are part of Circuit Python ADS1115 Driver.
 import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS

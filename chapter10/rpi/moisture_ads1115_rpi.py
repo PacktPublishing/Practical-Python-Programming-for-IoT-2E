@@ -4,6 +4,7 @@ chapter10/rpi/moisture_ads1115_rpi.py
 Using a Raspberry Pi & Python to detect moisture using ADS1115 ADC
 
 Dependencies:
+  # https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
   pip3 install pigpio adafruit-circuitpython-ads1x15
 
 Built and tested with Python 3.11.22 on Raspberry Pi 5
@@ -12,8 +13,7 @@ from time import sleep
 import pigpio
 import moisture_calibration_config_rpi as calibration                            # (1)  <<<< DIFFERENCE: importing moisture calibration file.
 
-# Below imports are part of Circuit Python and Blinka
-@TODO Update ADS1115 Lib to https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
+# Below imports are part of Circuit Python ADS1115 Driver.
 import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS
