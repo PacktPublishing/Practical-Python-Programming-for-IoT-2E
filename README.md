@@ -9,3 +9,5 @@ The code repository for the _1st Edition_ can be found [here](https://github.com
 ### [Chapter 8](chapter08) - Switching Things On and Off
 
 ### [Chapter 10](chapter10) - Measuring Temperature, Humidity, Moisture and Light Levels
+
+### [Chapter 11](chapter11) - Movement with Motors, Servos and Steppers
