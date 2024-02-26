@@ -7,7 +7,7 @@ $ mpremote mount . run servo_alt_pico.py
 
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-from time import sleep
+from time import sleep_ms
 from machine import Pin, PWM
 
 SERVO_GPIO = 21
@@ -129,17 +129,23 @@ def sweep(count=4):
     """
 
     left()  # Starting position
-    sleep(MOVEMENT_DELAY_SECS)
+    sleep_ms(MOVEMENT_DELAY_SECS * 1000)
 
     for i in range(count):
         right()
-        sleep(MOVEMENT_DELAY_SECS)
+        sleep_ms(MOVEMENT_DELAY_SECS * 1000)
         left()
-        sleep(MOVEMENT_DELAY_SECS)
+        sleep_ms(MOVEMENT_DELAY_SECS * 1000)
 
 
 if __name__ == '__main__':
     try:
+        print("Centering")
+        center()
+        
+        sleep_ms(2000)
+
+        print("Sweeping left and right")
         sweep()
 
     finally:
