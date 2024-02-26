@@ -90,6 +90,11 @@ def sweep(count=4):
 if __name__ == '__main__':
 
     try:
+        print("Centering")
+        center()
+        
+        sleep(2)
+
         print("Sweeping left and right")
         sweep()
 
