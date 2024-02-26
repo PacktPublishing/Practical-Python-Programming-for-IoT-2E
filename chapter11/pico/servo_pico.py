@@ -12,24 +12,23 @@ from machine import Pin, PWM
 
 SERVO_GPIO = 21
 
-# Pulse widths for extreme left/right and center positions in nanoseconds.
+# Pulse widths for extreme left/right and center positions in microseconds.
 # The default values are 'typical' values for a hobby servo.
 # Be gradual when changing the left and right adjustments
 # because a servo can be damaged if rotated beyond its limits.
 RIGHT_PULSE   = 1000  # Smaller values for 'more' right             # (1)
-LEFT_PULSE    = 2500  # Higher values for 'more' left
-#CENTER_PULSE = 1500  # or calculate as below
+LEFT_PULSE    = 2000  # Higher values for 'more' left
+# CENTER_PULSE = 1500  # or calculate as below
 CENTER_PULSE = ((LEFT_PULSE - RIGHT_PULSE) // 2) + RIGHT_PULSE
 
-# Delay to give servo time to move
-MOVEMENT_DELAY_SECS = 0.5                                           # (2)
+# Delay to give servo time to move (milliseconds)
+MOVEMENT_DELAY_MS = 500                                             # (2)
 
 # Note that after wrapping a Pin with PWM(), Pin methods including on(), off(), high(), low() and p.value(n) do not work.
 # We can use pwm.duty_u16(65535) for fully 'on' and pwm.duty_u16(0) for fully'off'
 p = Pin(SERVO_GPIO, Pin.OUT)
 pwm = PWM(p)
 
-# @TODO TBC
 # Servos commonly operate at 50Hz, that is one pulse every 20ms  (1 second / 50 Hz = 0.02)
 pwm.freq(50)
 
@@ -45,21 +44,27 @@ def center():
      """
      Center the servo.
      """
-     pwm.duty_ns(CENTER_PULSE)
+     
+     # Multiply by 1000 to convert microseconds to nanoseconds. 
+     pwm.duty_ns(int(CENTER_PULSE * 1000))
 
 
 def left():
     """
     Rotate servo to full left position.
     """
-    pwm.duty_ns(LEFT_PULSE)
+
+    # Multiply by 1000 to convert microseconds to nanoseconds. 
+    pwm.duty_ns(int(LEFT_PULSE * 1000))
 
 
 def right():
     """
     Rotate servo to full right position.
     """
-    pwm.duty_ns(RIGHT_PULSE)
+
+    # Multiply by 1000 to convert microseconds to nanoseconds. 
+    pwm.duty_ns(int(RIGHT_PULSE * 1000))
 
 
 def angle(to_angle):
@@ -74,7 +79,8 @@ def angle(to_angle):
     pulse_range = LEFT_PULSE - RIGHT_PULSE
     pulse = LEFT_PULSE - round(ratio * pulse_range) 
 
-    pwm.duty_ns(pulse)
+    # Multiply by 1000 to convert microseconds to nanoseconds. 
+    pwm.duty_ns(int(pulse * 1000))
 
 
 def sweep(count=4):
@@ -82,13 +88,13 @@ def sweep(count=4):
     Sweep servo horn left and right 'count' times.
     """
     left() # Starting position
-    sleep_ms(MOVEMENT_DELAY_SECS * 1000)
+    sleep_ms(MOVEMENT_DELAY_MS)
 
     for i in range(count):
         right()
-        sleep_ms(MOVEMENT_DELAY_SECS * 1000)
+        sleep_ms(MOVEMENT_DELAY_MS)
         left()
-        sleep_ms(MOVEMENT_DELAY_SECS * 1000)
+        sleep_ms(MOVEMENT_DELAY_MS)
 
 
 if __name__ == '__main__':
@@ -96,11 +102,15 @@ if __name__ == '__main__':
     try:
         print("Centering")
         center()
-        
-        sleep_ms(2000)
+        sleep_ms(1000)
 
         print("Sweeping left and right")
         sweep()
+        sleep_ms(1000)
+
+        print("Centering")
+        center()
+        sleep_ms(1000)
 
     finally:
         idle() # Idle servo.

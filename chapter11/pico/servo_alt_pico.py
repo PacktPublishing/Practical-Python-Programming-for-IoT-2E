@@ -12,17 +12,17 @@ from machine import Pin, PWM
 
 SERVO_GPIO = 21
 
-# Pulse widths for extreme left/right and center positions in nanoseconds.
+# Pulse widths for extreme left/right and center positions in microseconds.
 # The default values are 'typical' values for a hobby servo.
 # Be gradual when changing the left and right adjustments
 # because a servo can be damaged if rotated beyond its limits.
 RIGHT_PULSE = 1000  # Smaller values for 'more' right
-LEFT_PULSE = 2500  # Higher values for 'more' left
+LEFT_PULSE  = 2000  # Higher values for 'more' left
 # CENTER_PULSE = 1500  # or calculate as below
 CENTER_PULSE = ((LEFT_PULSE - RIGHT_PULSE) // 2) + RIGHT_PULSE
 
-# Delay to give servo time to move
-MOVEMENT_DELAY_SECS = 0.5
+# Delay to give servo time to move (milliseconds)
+MOVEMENT_DELAY_MS = 500
 
 # Note that after wrapping a Pin with PWM(), Pin methods including on(), off(), high(), low() and p.value(n) do not work.
 # We can use pwm.duty_u16(65535) for fully 'on' and pwm.duty_u16(0) for fully'off'
@@ -55,7 +55,7 @@ def center():
     """
 
     # WAS
-    # pwm.duty_ns(CENTER_PULSE)
+    # pwm.duty_ns(int(CENTER_PULSE * 1000))
 
     # NOW
     dutycycle_percent = CENTER_PULSE / PULSE_WIDTH
@@ -70,7 +70,7 @@ def left():
     """
 
     # WAS
-    # pwm.duty_ns(LEFT_PULSE)
+    # pwm.duty_ns(int(LEFT_PULSE * 1000))
 
     # NOW
     dutycycle_percent = LEFT_PULSE / PULSE_WIDTH
@@ -87,7 +87,7 @@ def right():
     """
 
     # WAS
-    # pwm.duty_ns(RIGHT_PULSE)
+    # pwm.duty_ns(int(RIGHT_PULSE * 1000))
 
     # NOW
     dutycycle_percent = RIGHT_PULSE / PULSE_WIDTH
@@ -111,13 +111,13 @@ def angle(to_angle):
     pulse = LEFT_PULSE - round(ratio * pulse_range)
 
     # WAS
-    # pwm.duty_ns(pulse)
+    # pwm.duty_ns(int(pulse * 1000))
 
     # NOW
     # Pulse in seconds divided by frequency in Hertz
     dutycycle_percent = (pulse / 1000) / 50
 
-    # Scale duty cycle percentage into PiGPIO duty cycle range
+    # Scale duty cycle percentage into duty cycle range
     dutycycle = int(dutycycle_percent * DUTYCYCLE_RANGE)
 
     pwm.duty_u16(dutycycle)
@@ -129,24 +129,28 @@ def sweep(count=4):
     """
 
     left()  # Starting position
-    sleep_ms(MOVEMENT_DELAY_SECS * 1000)
+    sleep_ms(MOVEMENT_DELAY_MS)
 
     for i in range(count):
         right()
-        sleep_ms(MOVEMENT_DELAY_SECS * 1000)
+        sleep_ms(MOVEMENT_DELAY_MS)
         left()
-        sleep_ms(MOVEMENT_DELAY_SECS * 1000)
+        sleep_ms(MOVEMENT_DELAY_MS)
 
 
 if __name__ == '__main__':
     try:
         print("Centering")
         center()
-        
-        sleep_ms(2000)
+        sleep_ms(1000)
 
         print("Sweeping left and right")
         sweep()
+        sleep_ms(1000)
+
+        print("Centering")
+        center()
+        sleep_ms(1000)
 
     finally:
         idle()

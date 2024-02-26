@@ -13,12 +13,12 @@ import pigpio
 
 SERVO_GPIO = 21
 
-# Pulse widths for extreme left/right and center positions in nanoseconds.
+# Pulse widths for extreme left/right and center positions in microseconds.
 # The default values are 'typical' values for a hobby servo.
 # Be gradual when changing the left and right adjustments
 # because a servo can be damaged if rotated beyond its limits.
 RIGHT_PULSE = 1000  # Smaller values for 'more' right
-LEFT_PULSE = 2500  # Higher values for 'more' left
+LEFT_PULSE  = 2000  # Higher values for 'more' left
 # CENTER_PULSE = 1500  # or calculate as below
 CENTER_PULSE = ((LEFT_PULSE - RIGHT_PULSE) // 2) + RIGHT_PULSE
 
@@ -143,11 +143,15 @@ if __name__ == '__main__':
     try:
         print("Centering")
         center()
-
-        sleep(2)
+        sleep(1)
 
         print("Sweeping left and right")
         sweep()
+        sleep(1)
+
+        print("Centering")
+        center()
+        sleep(1)
 
     finally:
         idle()
