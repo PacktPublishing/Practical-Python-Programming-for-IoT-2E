@@ -1,11 +1,11 @@
 """
-chapter11/rpi/servo_pico.py
+chapter11/pico/servo_pico.py
 
 Using a Pico & MicroPython to control a servo.
 
 $ mpremote mount . run servo_pico.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from time import sleep
 from machine import Pin, PWM

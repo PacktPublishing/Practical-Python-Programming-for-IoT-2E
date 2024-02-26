@@ -1,11 +1,11 @@
 """
-chapter11/rpi/servo_alt_rpi.py
+chapter11/pico/servo_alt_pico.py
 
 Using a Pico & MicroPython to control a servo.
 
-$ mpremote mount . run servo_alt_rpi.py
+$ mpremote mount . run servo_alt_pico.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from time import sleep
 from machine import Pin, PWM
@@ -60,7 +60,7 @@ def center():
     # NOW
     dutycycle_percent = CENTER_PULSE / PULSE_WIDTH
     # Scale duty cycle percentage into PiGPIO duty cycle range 
-    dutycycle = dutycycle_percent * DUTYCYCLE_RANGE
+    dutycycle = int(dutycycle_percent * DUTYCYCLE_RANGE)
     pwm.duty_u16(dutycycle)
 
 
@@ -76,7 +76,7 @@ def left():
     dutycycle_percent = LEFT_PULSE / PULSE_WIDTH
 
     # Scale duty cycle percentage into PiGPIO duty cycle range 
-    dutycycle = dutycycle_percent * DUTYCYCLE_RANGE
+    dutycycle = int(dutycycle_percent * DUTYCYCLE_RANGE)
 
     pwm.duty_u16(dutycycle)
 
@@ -93,7 +93,7 @@ def right():
     dutycycle_percent = RIGHT_PULSE / PULSE_WIDTH
 
     # Scale duty cycle percentage into PiGPIO duty cycle range
-    dutycycle = dutycycle_percent * DUTYCYCLE_RANGE
+    dutycycle = int(dutycycle_percent * DUTYCYCLE_RANGE)
 
     pwm.duty_u16(dutycycle)
 
@@ -118,7 +118,7 @@ def angle(to_angle):
     dutycycle_percent = (pulse / 1000) / 50
 
     # Scale duty cycle percentage into PiGPIO duty cycle range
-    dutycycle = dutycycle_percent * DUTYCYCLE_RANGE
+    dutycycle = int(dutycycle_percent * DUTYCYCLE_RANGE)
 
     pwm.duty_u16(dutycycle)
 
