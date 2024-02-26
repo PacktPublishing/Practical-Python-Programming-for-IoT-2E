@@ -1,12 +1,12 @@
 """
-File: chapter10/stepper.py
+chapter11/rpi/stepper_rpi.py
 
-Controlling a bipolar stepper motor.
+Using a Raspberry Pi & Python to control a bipolar stepper motor.
 
 Dependencies:
   pip3 install pigpio
 
-Built and tested with Python 3.7 on Raspberry Pi 4 Model B
+Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 from time import sleep
 import pigpio

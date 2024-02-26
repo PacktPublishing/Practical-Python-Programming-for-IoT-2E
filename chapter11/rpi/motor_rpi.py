@@ -1,16 +1,16 @@
 """
-File: chapter10/motor.py
+chapter11/rpi/motor_rpi.py
 
-Using a L293D as a H-Bridge to control a DC Motor.
+Using a Raspberry Pi & Python to control a L293D acting as a H-Bridge to control a DC Motor.
 
 Dependencies:
   pip3 install pigpio
 
-Built and tested with Python 3.7 on Raspberry Pi 4 Model B
+Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 import pigpio                                                   # (1)
 from time import sleep
-from motor_class import Motor
+from chapter11.rpi.motor_class_rpi import Motor
 
 # Motor A
 CHANNEL_1_ENABLE_GPIO = 18                                      # (2)

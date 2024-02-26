@@ -1,5 +1,5 @@
 """
-File: chapter10/pico/pico_adc/moisture_pico.py
+chapter10/pico/pico_adc/moisture_pico.py
 
 Using a Pico & MicroPython to to detect moisture using ADC
 

@@ -1,15 +1,14 @@
 """
-File: chapter10/servo_alt.py
+chapter11/rpi/servo_alt_rpi.py
 
-Controlling a servo.
+Using a Pico & MicroPython to control a servo.
 
-Dependencies:
-  pip3 install pigpio
+$ mpremote mount . run servo_alt_rpi.py
 
-Built and tested with Python 3.7 on Raspberry Pi 4 Model B
+Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 from time import sleep
-import pigpio
+from machine import Pin, PWM
 
 SERVO_GPIO = 21
 
@@ -25,16 +24,16 @@ CENTER_PULSE = ((LEFT_PULSE - RIGHT_PULSE) // 2) + RIGHT_PULSE
 # Delay to give servo time to move
 MOVEMENT_DELAY_SECS = 0.5
 
-pi = pigpio.pi()
+# Note that after wrapping a Pin with PWM(), Pin methods including on(), off(), high(), low() and p.value(n) do not work.
+# We can use pwm.duty_u16(65535) for fully 'on' and pwm.duty_u16(0) for fully'off'
+p = Pin(SERVO_GPIO, Pin.OUT)
+pwm = PWM(p)
 
 # Servos commonly operate at 50Hz, that is one pulse every 20ms  (1 second / 50 Hz = 0.02)
-pi.set_PWM_frequency(SERVO_GPIO, 50)
+pwm.freq(50)
 PULSE_WIDTH = 20000.0  # 20000 microsecond = 20 milliseconds = 0.02 seconds
 
-DUTYCYCLE_RANGE = 100
-# DUTYCYCLE_RANGE = pi.get_PWM_range(SERVO_GPIO)  # Default is 255
-pi.set_PWM_range(SERVO_GPIO, DUTYCYCLE_RANGE)
-
+DUTYCYCLE_RANGE = 65535 # this is the max value for pwm.duty_u16()
 
 def idle():
     """
@@ -43,11 +42,11 @@ def idle():
     """
 
     # WAS
-    # pi.set_servo_pulsewidth(SERVO_GPIO, 0)
+    # pwm.duty_ns(0)
 
     # NOW
     dutycycle = 0
-    pi.set_PWM_dutycycle(SERVO_GPIO, dutycycle)
+    pwm.duty_u16(dutycycle)
 
 
 def center():
@@ -56,13 +55,13 @@ def center():
     """
 
     # WAS
-    # pi.set_servo_pulsewidth(SERVO_GPIO, CENTER_PULSE)
+    # pwm.duty_ns(CENTER_PULSE)
 
     # NOW
     dutycycle_percent = CENTER_PULSE / PULSE_WIDTH
     # Scale duty cycle percentage into PiGPIO duty cycle range 
     dutycycle = dutycycle_percent * DUTYCYCLE_RANGE
-    pi.set_PWM_dutycycle(SERVO_GPIO, dutycycle)
+    pwm.duty_u16(dutycycle)
 
 
 def left():
@@ -71,7 +70,7 @@ def left():
     """
 
     # WAS
-    # pi.set_servo_pulsewidth(SERVO_GPIO, LEFT_PULSE)
+    # pwm.duty_ns(LEFT_PULSE)
 
     # NOW
     dutycycle_percent = LEFT_PULSE / PULSE_WIDTH
@@ -79,7 +78,7 @@ def left():
     # Scale duty cycle percentage into PiGPIO duty cycle range 
     dutycycle = dutycycle_percent * DUTYCYCLE_RANGE
 
-    pi.set_PWM_dutycycle(SERVO_GPIO, dutycycle)
+    pwm.duty_u16(dutycycle)
 
 
 def right():
@@ -88,15 +87,15 @@ def right():
     """
 
     # WAS
-    # pi.set_servo_pulsewidth(SERVO_GPIO, RIGHT_PULSE)
+    # pwm.duty_ns(RIGHT_PULSE)
 
-    # NOWz
+    # NOW
     dutycycle_percent = RIGHT_PULSE / PULSE_WIDTH
 
     # Scale duty cycle percentage into PiGPIO duty cycle range
     dutycycle = dutycycle_percent * DUTYCYCLE_RANGE
 
-    pi.set_PWM_dutycycle(SERVO_GPIO, dutycycle)
+    pwm.duty_u16(dutycycle)
 
 
 def angle(to_angle):
@@ -112,7 +111,7 @@ def angle(to_angle):
     pulse = LEFT_PULSE - round(ratio * pulse_range)
 
     # WAS
-    # pi.set_servo_pulsewidth(SERVO_GPIO, pulse)
+    # pwm.duty_ns(pulse)
 
     # NOW
     # Pulse in seconds divided by frequency in Hertz
@@ -121,7 +120,7 @@ def angle(to_angle):
     # Scale duty cycle percentage into PiGPIO duty cycle range
     dutycycle = dutycycle_percent * DUTYCYCLE_RANGE
 
-    pi.set_PWM_dutycycle(SERVO_GPIO, dutycycle)
+    pwm.duty_u16(dutycycle)
 
 
 def sweep(count=4):
@@ -145,4 +144,5 @@ if __name__ == '__main__':
 
     finally:
         idle()
-        pi.stop() # PiGPIO Cleanup
+        pwm.deinit()  # Disable PWM
+        p.value(0)  # Ensure GPIO is Off

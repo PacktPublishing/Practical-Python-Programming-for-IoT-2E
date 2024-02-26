@@ -1,7 +1,7 @@
 """
 chapter08/rpi/optocoupler_rpi.py
 
-Using a Raspberry Pi & Python to Control an Optocoupler.
+Using a Raspberry Pi & Python to control an optocoupler.
 
 Dependencies:
   pip3 install pigpio

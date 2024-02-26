@@ -1,7 +1,7 @@
 """
 chapter08/rpi/transistor_rpi.py
 
-Using a Raspberry Pi & Python to Control a MOSFET Transistor.
+Using a Raspberry Pi & Python to control a MOSFET transistor.
 
 Dependencies:
   pip3 install pigpio

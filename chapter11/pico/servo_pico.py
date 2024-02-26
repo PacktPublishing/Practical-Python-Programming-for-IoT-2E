@@ -1,15 +1,14 @@
 """
-File: chapter10/servo_alt.py
+chapter11/rpi/servo_pico.py
 
-Controlling a servo.
+Using a Pico & MicroPython to control a servo.
 
-Dependencies:
-  pip3 install pigpio
+$ mpremote mount . run servo_pico.py
 
-Built and tested with Python 3.7 on Raspberry Pi 4 Model B
+Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 from time import sleep
-import pigpio
+from machine import Pin, PWM
 
 SERVO_GPIO = 21
 
@@ -25,37 +24,42 @@ CENTER_PULSE = ((LEFT_PULSE - RIGHT_PULSE) // 2) + RIGHT_PULSE
 # Delay to give servo time to move
 MOVEMENT_DELAY_SECS = 0.5                                           # (2)
 
-pi = pigpio.pi()
-pi.set_mode(SERVO_GPIO, pigpio.OUTPUT)
+# Note that after wrapping a Pin with PWM(), Pin methods including on(), off(), high(), low() and p.value(n) do not work.
+# We can use pwm.duty_u16(65535) for fully 'on' and pwm.duty_u16(0) for fully'off'
+p = Pin(SERVO_GPIO, Pin.OUT)
+pwm = PWM(p)
 
+# @TODO TBC
+# Servos commonly operate at 50Hz, that is one pulse every 20ms  (1 second / 50 Hz = 0.02)
+pwm.freq(50)
 
 def idle():                                                         # (3)
     """
     Idle servo (zero pulse width).
     Servo will be rotatable by hand with little force.
     """
-    pi.set_servo_pulsewidth(SERVO_GPIO, 0)
+    pwm.duty_ns(0)
 
 
 def center():
      """
      Center the servo.
      """
-     pi.set_servo_pulsewidth(SERVO_GPIO, CENTER_PULSE)
+     pwm.duty_ns(CENTER_PULSE)
 
 
 def left():
     """
     Rotate servo to full left position.
     """
-    pi.set_servo_pulsewidth(SERVO_GPIO, LEFT_PULSE)
+    pwm.duty_ns(LEFT_PULSE)
 
 
 def right():
     """
     Rotate servo to full right position.
     """
-    pi.set_servo_pulsewidth(SERVO_GPIO, RIGHT_PULSE)
+    pwm.duty_ns(RIGHT_PULSE)
 
 
 def angle(to_angle):
@@ -70,7 +74,7 @@ def angle(to_angle):
     pulse_range = LEFT_PULSE - RIGHT_PULSE
     pulse = LEFT_PULSE - round(ratio * pulse_range) 
 
-    pi.set_servo_pulsewidth(SERVO_GPIO, pulse)
+    pwm.duty_ns(pulse)
 
 
 def sweep(count=4):
@@ -95,4 +99,5 @@ if __name__ == '__main__':
 
     finally:
         idle() # Idle servo.
-        pi.stop() # PiGPIO Cleanup
+        pwm.deinit()  # Disable PWM
+        p.value(0)  # Ensure GPIO is Off

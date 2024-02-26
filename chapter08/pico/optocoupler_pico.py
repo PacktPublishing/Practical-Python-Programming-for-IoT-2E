@@ -1,7 +1,7 @@
 """
 chapter08/pico/optocoupler_pico.py
 
-Using a Pico & MicroPython to Control an Optocoupler Transistor.
+Using a Pico & MicroPython to control an optocoupler.
 
 $ mpremote mount . run optocoupler_pico.py
 
@@ -10,8 +10,8 @@ Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 from time import sleep
 from machine import Pin, PWM
 
-GP = 21  # GPIO
-p = Pin(GP, Pin.OUT)
+GPIO = 21
+p = Pin(GPIO, Pin.OUT)
 
 try:
     # Note: Circuit is wired as ACTIVE LOW.

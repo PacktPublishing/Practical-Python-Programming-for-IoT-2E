@@ -19,7 +19,9 @@
   
 ### Datasheets
 
-None
+* MG90S hobby servo <https://www.alldatasheet.com/datasheet-pdf/pdf/1132104/ETC2/MG90S.html>
+* L293D IC <https://www.alldatasheet.com/datasheet-pdf/pdf/89353/TI/L293D.html>
+* 28BYJ-48 stepper motor (5 volts, 64 steps, 1:64 gearing) <https://www.alldatasheet.com/datasheet-pdf/pdf/1132391/ETC1/28BYJ-48.html>
 
 ### Post Publication Updates and Errata
 

@@ -1,5 +1,5 @@
 """
-File: chapter10/pico/pico_adc/ldr_pico.py
+chapter10/pico/pico_adc/ldr_pico.py
 
 Using a Pico & MicroPython to read an LDR using ADC
 

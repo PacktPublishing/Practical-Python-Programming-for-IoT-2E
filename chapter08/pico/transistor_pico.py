@@ -1,7 +1,7 @@
 """
 chapter08/pico/transistor_pico.py
 
-Using a Pico & MicroPython to Control a MOSFET Transistor.
+Using a Pico & MicroPython to control a MOSFET transistor.
 
 $ mpremote mount . run transistor_pico.py
 
@@ -10,8 +10,8 @@ Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 from time import sleep
 from machine import Pin, PWM
 
-GP = 21 # GPIO
-p = Pin(GP, Pin.OUT)
+GPIO = 21
+p = Pin(GPIO, Pin.OUT)
 
 # Note that after wrapping a Pin with PWM(), Pin methods including on(), off(), high(), low() and p.value(n) do not work.
 # We can use pwm.duty_u16(65535) for fully 'on' and pwm.duty_u16(0) for fully'off'
