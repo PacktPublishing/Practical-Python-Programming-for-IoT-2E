@@ -28,27 +28,18 @@ MOVEMENT_DELAY_SECS = 0.5                                           # (2)
 pi = pigpio.pi()
 pi.set_mode(SERVO_GPIO, pigpio.OUTPUT)
 
-
-def idle():                                                         # (3)
+def left():                                                         # (3)
     """
-    Idle servo (zero pulse width).
-    Servo will be rotatable by hand with little force.
+    Rotate servo to full left position.
     """
-    pi.set_servo_pulsewidth(SERVO_GPIO, 0)
-
-
+    pi.set_servo_pulsewidth(SERVO_GPIO, LEFT_PULSE)
+    
+    
 def center():
      """
      Center the servo.
      """
      pi.set_servo_pulsewidth(SERVO_GPIO, CENTER_PULSE)
-
-
-def left():
-    """
-    Rotate servo to full left position.
-    """
-    pi.set_servo_pulsewidth(SERVO_GPIO, LEFT_PULSE)
 
 
 def right():
@@ -58,7 +49,15 @@ def right():
     pi.set_servo_pulsewidth(SERVO_GPIO, RIGHT_PULSE)
 
 
-def angle(to_angle):
+def idle():                                                         # (4)
+    """
+    Idle servo (zero pulse width).
+    Servo will be rotatable by hand with little force.
+    """
+    pi.set_servo_pulsewidth(SERVO_GPIO, 0)
+
+
+def angle(to_angle):                                                # (5)
     """
     Rotate servo to specified angle (between -90 and +90 degrees)
     """
@@ -66,14 +65,14 @@ def angle(to_angle):
     # Restrict to -90..+90 degrees
     to_angle = int(min(max(to_angle, -90), 90))
 
-    ratio = (to_angle + 90) / 180.0
+    ratio = (to_angle + 90) / 180.0                                 # (6)
     pulse_range = LEFT_PULSE - RIGHT_PULSE
-    pulse = LEFT_PULSE - round(ratio * pulse_range) 
+    pulse = LEFT_PULSE - round(ratio * pulse_range)                 # (7)
 
     pi.set_servo_pulsewidth(SERVO_GPIO, pulse)
 
 
-def sweep(count=4):
+def sweep(count=4):                                                 # (8)
     """
     Sweep servo horn left and right 'count' times.
     """

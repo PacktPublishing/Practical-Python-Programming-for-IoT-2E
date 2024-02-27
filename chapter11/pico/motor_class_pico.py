@@ -1,26 +1,29 @@
 """
-chapter11/rpi/motor_class_rpi.py
+chapter11/pico/motor_class_pico.py
 
-Using a Raspberry Pi & Python to control a L293D acting as a H-Bridge to control a DC Motor.
+Using a Pico & MicroPython to control a L293D acting as a H-Bridge to control a DC Motor.
 
-Dependencies:
-  pip3 install pigpio
-
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-import pigpio
+from machine import Pin, PWM
 from time import sleep
 
 class Motor:
 
-    def __init__(self, pi, enable_gpio, logic_1_gpio, logic_2_gpio):
+    def __init__(self, enable_gpio, logic_1_gpio, logic_2_gpio):
 
-          self.pi = pi
           self.enable_gpio = enable_gpio
           self.logic_1_gpio = logic_1_gpio
-          self.logic_2_gpio = logic_2_gpio	  
+          self.logic_2_gpio = logic_2_gpio
 
-          pi.set_PWM_range(self.enable_gpio, 100)  # speed is 0..100               # (1)
+          self.enable_pwm = PWM(Pin(enable_gpio))
+          self.logic_1_pin = Pin(logic_1_gpio)
+          self.logic_2_pin = Pin(logic_2_gpio)
+
+          # MicroPython's PWM does not have the concept of a range,                # (1)
+          # so we will manually handle the range (motor speed %)
+          # in the methods below using the _speed_to_dutycycle()
+          # helper function.
 
 	      # Set default state - motor not spinning and set for forward direction.
           self.set_speed(0)                                                        # (2)
@@ -34,8 +37,8 @@ class Motor:
         if speed is not None:
             self.set_speed(speed)
 
-        self.pi.write(self.logic_1_gpio, pigpio.LOW)
-        self.pi.write(self.logic_2_gpio, pigpio.HIGH)
+        self.logic_1_pin.low()
+        self.logic_2_pin.high()
 
 
     def left(self, speed=None):                                                    # (4)
@@ -45,24 +48,26 @@ class Motor:
         if speed is not None:
             self.set_speed(speed)
 
-        self.pi.write(self.logic_1_gpio, pigpio.HIGH)
-        self.pi.write(self.logic_2_gpio, pigpio.LOW)
+        self.logic_1_pin.high()
+        self.logic_2_pin.low()
 
         
     def is_right(self):                                                            # (5)
         """
         Is motor set to spin right?
         """
-        return (not self.pi.read(self.logic_1_gpio)  # LOW
-              and self.pi.read(self.logic_2_gpio))   # HIGH
-
+        
+        return (not self.logic_1_pin.value == 0  # LOW
+              and self.logic_1_pin.value == 1)   # HIGH
 
     def set_speed(self, speed):                                                    # (6)
         """
         Set motor speed using PWM.
         """
-        assert 0<=speed<=100		
-        self.pi.set_PWM_dutycycle(self.enable_gpio, speed)
+        assert 0 <= speed <= 100
+
+        duty_cycle = _speed_to_dutycycle(speed)
+        self.enable_pwm.duty_u16(duty_cycle)
 
 
     def brake(self):                                                               # (7)
@@ -72,8 +77,10 @@ class Motor:
         was_right = self.is_right() # To restore direction after braking
         
         self.set_speed(100)
-        self.pi.write(self.logic_1_gpio, pigpio.LOW)
-        self.pi.write(self.logic_2_gpio, pigpio.LOW)
+        
+        self.logic_1_pin.low()
+        self.logic_2_pin.low()
+
         self.set_speed(0)
 
         # Restore motor direction
@@ -106,3 +113,20 @@ class Motor:
             self.right()
         else:
             self.left()
+
+
+def _speed_to_dutycycle(speed):
+    """
+    Helper function to convert a speed in the range 0..100
+    to a machine.PWM dutycycle.
+    """
+
+    if speed < 0:
+        speed = 0
+    elif speed > 100:
+        speed = 100
+
+    # 65535 is the max value for pwm.duty_u16()
+    duty_cycle = int(65535 / 100 * speed)
+
+    return duty_cycle

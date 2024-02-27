@@ -32,12 +32,14 @@ pwm = PWM(p)
 # Servos commonly operate at 50Hz, that is one pulse every 20ms  (1 second / 50 Hz = 0.02)
 pwm.freq(50)
 
-def idle():                                                         # (3)
+
+def left():                                                         # (3)
     """
-    Idle servo (zero pulse width).
-    Servo will be rotatable by hand with little force.
+    Rotate servo to full left position.
     """
-    pwm.duty_ns(0)
+
+    # Multiply by 1000 to convert microseconds to nanoseconds. 
+    pwm.duty_ns(int(LEFT_PULSE * 1000))
 
 
 def center():
@@ -49,15 +51,6 @@ def center():
      pwm.duty_ns(int(CENTER_PULSE * 1000))
 
 
-def left():
-    """
-    Rotate servo to full left position.
-    """
-
-    # Multiply by 1000 to convert microseconds to nanoseconds. 
-    pwm.duty_ns(int(LEFT_PULSE * 1000))
-
-
 def right():
     """
     Rotate servo to full right position.
@@ -67,7 +60,15 @@ def right():
     pwm.duty_ns(int(RIGHT_PULSE * 1000))
 
 
-def angle(to_angle):
+def idle():                                                         # (4)
+    """
+    Idle servo (zero pulse width).
+    Servo will be rotatable by hand with little force.
+    """
+    pwm.duty_ns(0)
+
+
+def angle(to_angle):                                                # (5)
     """
     Rotate servo to specified angle (between -90 and +90 degrees)
     """
@@ -75,15 +76,15 @@ def angle(to_angle):
     # Restrict to -90..+90 degrees
     to_angle = int(min(max(to_angle, -90), 90))
 
-    ratio = (to_angle + 90) / 180.0
+    ratio = (to_angle + 90) / 180.0                                 # (6)
     pulse_range = LEFT_PULSE - RIGHT_PULSE
-    pulse = LEFT_PULSE - round(ratio * pulse_range) 
+    pulse = LEFT_PULSE - round(ratio * pulse_range)                 # (7)
 
     # Multiply by 1000 to convert microseconds to nanoseconds. 
     pwm.duty_ns(int(pulse * 1000))
 
 
-def sweep(count=4):
+def sweep(count=4):                                                 # (8)
     """
     Sweep servo horn left and right 'count' times.
     """

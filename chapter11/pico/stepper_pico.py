@@ -1,17 +1,14 @@
 """
-chapter11/rpi/stepper_rpi.py
+chapter11/pico/stepper_pico.py
 
-Using a Raspberry Pi & Python to control a bipolar stepper motor.
+Using a Pico & MicroPython to control a bipolar stepper motor.
 
-Dependencies:
-  pip3 install pigpio
+$ mpremote mount . run stepper_pico.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-from time import sleep
-import pigpio
-
-pi = pigpio.pi()
+from time import sleep_ms
+from machine import Pin
 
 CHANNEL_1_ENABLE_GPIO = 5                                           # (1)
 CHANNEL_2_ENABLE_GPIO = 16
@@ -21,33 +18,28 @@ INPUT_2A_GPIO = 13  # Pink Coil 2  Connected to 2Y
 INPUT_3A_GPIO = 20  # Yellow Coil 3 Connected to 3Y
 INPUT_4A_GPIO = 21  # Orange Coil 4 Connected to 4Y
 
-# Coil GPIOs as a list.
-coil_gpios = [                                                      # (3)
-    INPUT_1A_GPIO,
-    INPUT_2A_GPIO,
-    INPUT_3A_GPIO,
-    INPUT_4A_GPIO
+# Coil GPIOs Pins as a list.                                        # (3)
+# and initialise each coil GPIO Pins as OUTPUT.                     # (4)
+coil_gpios_pins = [                             
+    Pin(INPUT_1A_GPIO, mode=Pin.OUT),
+    Pin(INPUT_2A_GPIO, mode=Pin.OUT),
+    Pin(INPUT_3A_GPIO, mode=Pin.OUT),
+    Pin(INPUT_4A_GPIO, mode=Pin.OUT)
 ]
-
-# Initialise each coil GPIO as OUTPUT.
-for gpio in coil_gpios:                                             # (4)
-    pi.set_mode(gpio, pigpio.OUTPUT)
-
 
 def off():
     """
     Turn all coil off.
     """
-    for gpio in coil_gpios:                                         # (5)
-        pi.write(gpio, pigpio.HIGH)  # Coil off
+    for pin in coil_gpios_pins:                                     # (5)
+        pin.high() # Coil off
 
 off()  # All coils off
 
-# Enable Channels (always high)
-pi.set_mode(CHANNEL_1_ENABLE_GPIO, pigpio.OUTPUT)                   # (6)
-pi.write(CHANNEL_1_ENABLE_GPIO, pigpio.HIGH)
-pi.set_mode(CHANNEL_2_ENABLE_GPIO, pigpio.OUTPUT)
-pi.write(CHANNEL_2_ENABLE_GPIO, pigpio.HIGH)
+
+# Enable Channels (always high)                                     # (6)
+channel_1_enable_pin = Pin(CHANNEL_1_ENABLE_GPIO, mode=Pin.OUT, value=1)
+channel_2_enable_pin = Pin(CHANNEL_2_ENABLE_GPIO, mode=Pin.OUT, value=1)
 
 
 COIL_HALF_SEQUENCE = [                                              # (7)
@@ -69,6 +61,7 @@ COIL_FULL_SEQUENCE = [
     [0, 1, 1, 0]    # (d)
 ]
 
+
 # For rotate() to keep track of the sequence row it is on.
 sequence_row = 0
 
@@ -77,12 +70,10 @@ def rotate(steps, sequence=COIL_HALF_SEQUENCE, delay_ms=0.2):        # (8)
     """ 
     Rotate number of steps
     use -steps to rotate in reverse
-    """
-    assert delay_ms > 0
-    assert sequence == COIL_HALF_SEQUENCE or sequence == COIL_FULL_SEQUENCE
+    """    
 
     global sequence_row
-    
+
     direction = +1
 
     if steps < 0:
@@ -94,11 +85,11 @@ def rotate(steps, sequence=COIL_HALF_SEQUENCE, delay_ms=0.2):        # (8)
 
       for i in range(len(sequence[sequence_row])):
 
-          gpio = coil_gpios[i]                                      # (11)
+          pin = coil_gpios_pins[i]                                  # (11)
           state = sequence[sequence_row][i] # 0 or 1                # (12)
-          pi.write(gpio, state)                                     # (13)
-
-          sleep(delay_ms / 1000)
+          pin.value(state)                                          # (13)
+          
+          sleep_ms(int(STEP_DELAY_SECS * 1000))
 
       sequence_row += direction                                     # (14)
 
@@ -124,7 +115,6 @@ if __name__ == '__main__':
         print("4096 steps for 360 degree rotation using sequence COIL_HALF_SEQUENCE.")
         rotate(4096, COIL_HALF_SEQUENCE, STEP_DELAY_MS)  # Rotate one direction
         rotate(-4096, COIL_HALF_SEQUENCE, STEP_DELAY_MS) # Rotate reverse direction
- 
+
     finally:
         off()  # Turn stepper coils off
-        pi.stop()  # PiGPIO Cleanup

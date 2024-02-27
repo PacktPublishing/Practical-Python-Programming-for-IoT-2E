@@ -1,16 +1,15 @@
 """
-chapter11/rpi/motor_rpi.py
+chapter11/pico/motor_pico.py
 
-Using a Raspberry Pi & Python to control a L293D acting as a H-Bridge to control a DC Motor.
+Using a Pico & MicroPython to control a L293D acting as a H-Bridge to control a DC Motor.
 
-Dependencies:
-  pip3 install pigpio
+$ mpremote mount . run motor_pico.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-import pigpio                                                   # (1)
+from machine import Pin, PWM                                    # (1)
 from time import sleep
-from motor_class_rpi import Motor
+from motor_class_pico import Motor
 
 # Motor A
 CHANNEL_1_ENABLE_GPIO = 5                                       # (2)
@@ -22,9 +21,9 @@ CHANNEL_2_ENABLE_GPIO = 16                                      # (3)
 INPUT_3Y_GPIO = 20
 INPUT_4Y_GPIO = 21
 
-pi = pigpio.pi()                                                # (4)
-motor_A = Motor(pi, CHANNEL_1_ENABLE_GPIO, INPUT_1Y_GPIO, INPUT_2Y_GPIO)
-motor_B = Motor(pi, CHANNEL_2_ENABLE_GPIO, INPUT_3Y_GPIO, INPUT_4Y_GPIO)
+                                                                # (4)
+motor_A = Motor(CHANNEL_1_ENABLE_GPIO, INPUT_1Y_GPIO, INPUT_2Y_GPIO)
+motor_B = Motor(CHANNEL_2_ENABLE_GPIO, INPUT_3Y_GPIO, INPUT_4Y_GPIO)
 
 
 if __name__ == '__main__':
@@ -57,4 +56,3 @@ if __name__ == '__main__':
     finally:
         motor_A.set_speed(0)                                               
         motor_B.set_speed(0)                                               
-        pi.stop()
