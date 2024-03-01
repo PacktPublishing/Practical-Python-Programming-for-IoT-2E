@@ -16,9 +16,12 @@ class Motor:
           self.logic_1_gpio = logic_1_gpio
           self.logic_2_gpio = logic_2_gpio
 
-          self.enable_pwm = PWM(Pin(enable_gpio))
-          self.logic_1_pin = Pin(logic_1_gpio)
-          self.logic_2_pin = Pin(logic_2_gpio)
+          self.enable_pwm = PWM(Pin(enable_gpio, mode=Pin.OUT))
+          self.logic_1_pin = Pin(logic_1_gpio, mode=Pin.OUT)
+          self.logic_2_pin = Pin(logic_2_gpio, mode=Pin.OUT)
+
+          # Set PWM frequency. Default is 0. # You can experiment with this number if you like.
+          self.enable_pwm.freq(5000)
 
           # MicroPython's PWM does not have the concept of a range,                # (1)
           # so we will manually handle the range (motor speed %)

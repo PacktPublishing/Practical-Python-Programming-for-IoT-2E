@@ -31,28 +31,26 @@ if __name__ == '__main__':
     try:
         # Make the motors move
 
-        print("Motor A and B Speed 50, Right")
-        motor_A.set_speed(50)                                   # (5)
+        print("Motor A and B Speed 100, Right")
+        motor_A.set_speed(100)                                   # (5)
         motor_A.right()
-        motor_B.set_speed(50)    
+        motor_B.set_speed(100)    
         motor_B.right()
-        sleep(2)
+        sleep(4)
 
-        print("Motor A Speed 100")
-        motor_A.set_speed(100)
+        print("Motor B Stop")
+        motor_B.set_speed(0)
+        sleep(4)
 
-        print("Motor B Left")
+        print("Motor B Speed 100, Left")
         motor_B.left()
-        sleep(2)
-
-        print("Motor B Speed 100")
         motor_B.set_speed(100)
-        sleep(2)        
+        sleep(4)
 
         print("Motor A Classic Brake, Motor B PWM Brake")
         motor_A.brake()                                         # (6)
         motor_B.brake_pwm()
-        sleep(2)
+        sleep(4)
 
     finally:
         motor_A.set_speed(0)                                               
