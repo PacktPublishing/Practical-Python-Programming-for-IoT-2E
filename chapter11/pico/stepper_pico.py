@@ -7,7 +7,7 @@ $ mpremote mount . run stepper_pico.py
 
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-from time import sleep_ms
+from time import sleep_us
 from machine import Pin
 
 CHANNEL_1_ENABLE_GPIO = 5                                           # (1)
@@ -88,8 +88,10 @@ def rotate(steps, sequence=COIL_HALF_SEQUENCE, delay_ms=0.2):        # (8)
           pin = coil_gpios_pins[i]                                  # (11)
           state = sequence[sequence_row][i] # 0 or 1                # (12)
           pin.value(state)                                          # (13)
-          
-          sleep_ms(int(STEP_DELAY_SECS * 1000))
+
+          # sleep_ms() cannot take a float (and therefore a fraction of a millisecond)
+          # so using sleep_us() and converting milliseconds to microseconds.
+          sleep_us(int(delay_ms * 1000))
 
       sequence_row += direction                                     # (14)
 
