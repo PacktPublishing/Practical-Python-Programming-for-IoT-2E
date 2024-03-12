@@ -7,15 +7,19 @@
 * `rpi` folder - Raspberry Pi Python Code
 
   * `requirements.txt` - Python dependencies required for this chapter
-  * `motor.py` - Using a L293D as a H-Bridge to control a DC Motor
-  * `motor_class.py` - Using a L293D as a H-Bridge to control a DC Motor (Driver class)
-  * `servo.py` - Controlling a servo
-  * `servo_alt.py` - Controlling a servo (alternative)
-  * `stepper.py` - Controlling a bipolar stepper motor
+  * `motor_rpi.py` - Using a L293D as a H-Bridge to control a DC Motor
+  * `motor_class_rpi.py` - Using a L293D as a H-Bridge to control a DC Motor (Driver class)
+  * `servo_rpi.py` - Controlling a servo
+  * `servo_alt_rpi.py` - Controlling a servo (alternative)
+  * `stepper_rpi.py` - Controlling a bipolar stepper motor
 
 * `pico` folder - Pico MicroPython Code
 
-  * @TODO
+  * `motor_pico.py` - Using a L293D as a H-Bridge to control a DC Motor
+  * `motor_class_pico.py` - Using a L293D as a H-Bridge to control a DC Motor (Driver class)
+  * `servo_pico.py` - Controlling a servo
+  * `servo_alt_pico.py` - Controlling a servo (alternative)
+  * `stepper_pico.py` - Controlling a bipolar stepper motor
   
 ### Datasheets
 

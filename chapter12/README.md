@@ -21,7 +21,10 @@
 
 ### Datasheets
 
-None
+* HC-SR501 PIR sensor <https://www.alldatasheet.com/datasheet-pdf/pdf/1131987/ETC2/HC-SR501.html>
+* A3144 Hall-effect sensor (non-latching) <https://www.alldatasheet.com/datasheet-pdf/pdf/55092/ALLEGRO/A3144.html>
+* AH3503 Hall-effect sensor (ratiometric) <https://www.alldatasheet.com/datashet-pdf/pdf/1132644/AHNJ/AH3503.html>
+* HC-SR04 or HC-SR04P ultrasonic distance sensor <https://tinyurl.com/HCSR04DS>
 
 ### Post Publication Updates and Errata
 

@@ -11,3 +11,6 @@ The code repository for the _1st Edition_ can be found [here](https://github.com
 ### [Chapter 10](chapter10) - Measuring Temperature, Humidity, Moisture and Light Levels
 
 ### [Chapter 11](chapter11) - Movement with Motors, Servos and Steppers
+
+### [Chapter 12](chapter12) - Chapter 12 - Measuring Distance and Detecting Movement
+
