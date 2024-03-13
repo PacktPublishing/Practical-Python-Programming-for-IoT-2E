@@ -17,7 +17,6 @@ import pigpio
 TRIG_GPIO = 20                                         # (1)
 ECHO_GPIO = 21
 
-
 # Speed of Sound in meters per second
 # at 20 degrees C (68 degrees F)
 VELOCITY = 343                                         # (2)
@@ -80,7 +79,8 @@ def get_distance_cms():                                # (7)
 
 def echo_handler(gpio, level, tick):                                                        # (11)
     """ Called whenever a level change occurs on ECHO_GPIO Pin.
-      Parameters defined by PiGPIO pi.callback() """
+      Parameters defined by PiGPIO pi.callback().
+      tick is the the number of microseconds since boot """
     global tick_start, tick_end, reading_success
 
     if level == pigpio.HIGH:

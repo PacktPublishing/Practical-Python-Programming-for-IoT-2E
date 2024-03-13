@@ -3,7 +3,7 @@ chapter12/pico/hc-sr501_pico.py
 
 Using a Pico & MicroPython to read a HC-SR501 PIR Sensor.
 
-$ mpremote mount . run sr501_pico.py
+$ mpremote mount . run hc-sr501_pico.py
 
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
