@@ -19,9 +19,8 @@ pi = pigpio.pi()
 # Initialise GPIO
 pi.set_mode(GPIO, pigpio.INPUT)                                      # (1)
 pi.set_pull_up_down(GPIO, pigpio.PUD_DOWN)
-pi.set_glitch_filter(GPIO, 10000) # microseconds debounce            # (2)
 
-def callback_handler(gpio, level, tick):                             # (3)
+def callback_handler(gpio, level, tick):                             # (2)
     """ Called whenever a level change occurs on GPIO Pin.
       Parameters defined by PiGPIO pi.callback() """
     global triggered
@@ -35,7 +34,7 @@ def callback_handler(gpio, level, tick):                             # (3)
 
 
 # Register Callback
-callback = pi.callback(GPIO, pigpio.EITHER_EDGE, callback_handler)   # (4)
+callback = pi.callback(GPIO, pigpio.EITHER_EDGE, callback_handler)   # (3)
 
 
 if __name__ == "__main__":

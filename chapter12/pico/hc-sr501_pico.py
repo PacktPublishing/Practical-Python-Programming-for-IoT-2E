@@ -14,11 +14,9 @@ GPIO = 21
 triggered = False
 
 # Initialise GPIO
-pin = Pin(GPIO, mode=Pin.IN, pull=Pin.PULL_DOWN)                     # (1)
+pin = Pin(GPIO, mode=Pin.IN, pull=Pin.PULL_DOWN)                       # (1)
 
-#@FIXME pi.set_glitch_filter(GPIO, 10000) # microseconds debounce            # (2)
-
-def callback_handler(pin):                             # (3)
+def callback_handler(pin):                                             # (2)
     """ Called whenever a level change occurs on GPIO Pin. """
     global triggered
 
@@ -31,7 +29,7 @@ def callback_handler(pin):                             # (3)
 
 
 # Register Callback
-callback = pin.irq(handler=callback_handler, trigger=Pin.IRQ_RISING | Pin.IRQ_FALLING)  # (4)
+callback = pin.irq(handler=callback_handler, trigger=Pin.IRQ_RISING | Pin.IRQ_FALLING)  # (3)
 
 if __name__ == "__main__":
 

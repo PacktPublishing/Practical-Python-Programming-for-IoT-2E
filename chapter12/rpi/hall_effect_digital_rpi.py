@@ -8,7 +8,6 @@ Dependencies:
 
 Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
-from time import sleep
 from signal import pause
 import pigpio
 
@@ -22,7 +21,6 @@ pi.set_mode(GPIO, pigpio.INPUT)
 # Pull-Up. A3144 Hall-Effect sensor is Active LOW.
 # so pull-up for inactive HIGH.
 pi.set_pull_up_down(GPIO, pigpio.PUD_UP)
-pi.set_glitch_filter(GPIO, 10000) # microseconds debounce
 
 def callback_handler(gpio, level, tick):
     """ Called whenever a level change occurs on GPIO Pin.
