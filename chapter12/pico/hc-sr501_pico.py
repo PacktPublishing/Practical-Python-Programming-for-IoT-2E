@@ -7,44 +7,39 @@ $ mpremote mount . run hc-sr501_pico.py
 
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-from signal import pause
-import pigpio
+from machine import Pin
+from time import sleep_ms
 
 GPIO = 21
 triggered = False
 
-pi = pigpio.pi()
-
 # Initialise GPIO
-pi.set_mode(GPIO, pigpio.INPUT)                                      # (1)
-pi.set_pull_up_down(GPIO, pigpio.PUD_DOWN)
-pi.set_glitch_filter(GPIO, 10000) # microseconds debounce            # (2)
+pin = Pin(GPIO, mode=Pin.IN, pull=Pin.PULL_DOWN)                     # (1)
 
-def callback_handler(gpio, level, tick):                             # (3)
-    """ Called whenever a level change occurs on GPIO Pin.
-      Parameters defined by PiGPIO pi.callback() """
+#@FIXME pi.set_glitch_filter(GPIO, 10000) # microseconds debounce            # (2)
+
+def callback_handler(pin):                             # (3)
+    """ Called whenever a level change occurs on GPIO Pin. """
     global triggered
 
-    if level == pigpio.HIGH:
+    if pin.value() == 1:
         triggered = True
         print("Triggered")
-    elif level == pigpio.LOW:
+    elif pin.value() == 0:
         triggered = False
         print("Not Triggered")
 
 
 # Register Callback
-callback = pi.callback(GPIO, pigpio.EITHER_EDGE, callback_handler)   # (4)
-
+callback = pin.irq(handler=callback_handler, trigger=Pin.IRQ_RISING | Pin.IRQ_FALLING)  # (4)
 
 if __name__ == "__main__":
 
-    try:
-        print("\nPLEASE NOTE - The HC-SR501 needs 1 minute after applying power to initialise itself.\n")
-        print("Monitoring environment...")
-        print("Press Control + C to Exit")
-        pause()
+    print("\nPLEASE NOTE - The HC-SR501 needs 1 minute after applying power to initialise itself.\n")
+    print("Monitoring environment...")
+    print("Press Control + C to Exit")
 
-    except KeyboardInterrupt:
-        callback.cancel()
-        pi.stop()
+    # Simple keep-alive because we are using IRQ callback on GPIO/pin
+    while True:
+        sleep_ms(10)
+    
