@@ -4,6 +4,7 @@ chapter12/rpi/hall_effect_analog_rpi.py
 Using a Raspberry & Python with a Ratiometric Type AH3505 Hall-Effect Sensor.
 
 Dependencies:
+  # https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
   pip3 install pigpio adafruit-circuitpython-ads1x15
 
 Built and tested with Python 3.11.22 on Raspberry Pi 5
@@ -11,7 +12,7 @@ Built and tested with Python 3.11.22 on Raspberry Pi 5
 from time import sleep
 import pigpio
 
-# Below imports are part of Circuit Python and Blinka
+# Below imports are part of Circuit Python ADS1115 Driver.
 import board                                                      
 import busio
 import adafruit_ads1x15.ads1115 as ADS
@@ -45,7 +46,7 @@ if __name__ == '__main__':
 
             # Analog input voltage will fluctuate a little. Using 1 decimal point
             # to steady display output.
-            output = "Volts={:>5.1f}, Delta Volts={:>5.1f}".format(volts, volts_delta)
+            output = "Volts={:>5.2f}, Delta Volts={:>5.2f}".format(volts, volts_delta)
             print(output)
             sleep(0.05)
 

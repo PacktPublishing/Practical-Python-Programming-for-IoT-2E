@@ -14,10 +14,12 @@
 
 * `pico` folder - Pico MicroPython Code
 
+  * `ADS1115_pico.py` - A simple module for reading analog input from an ADS1115 ADC
   * `hc-sr04_pico.py` - Distance Measurement with the HC-SR04 Ultrasonic Sensor
   * `hc-sr501_pico.py` - Movement Detection with the HC-SR501 PIR Sensor
   * `hall_effect_digital_pico.py` - Hall-Effect Sensor Example - Switch or Latching Type
-  * `hall_effect_analog_pico.py` - Hall-Effect Sensor Example - Ratiometric Type
+  * `hall_effect_analog_ads1115_pico` - Hall-Effect Sensor Example - Ratiometric Type using ADS1115 ADC
+  * `hall_effect_analog_adc_pico` - Hall-Effect Sensor Example - Ratiometric Type using Pico ADC
 
 ### Datasheets
 

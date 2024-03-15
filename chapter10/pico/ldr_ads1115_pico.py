@@ -1,7 +1,7 @@
 """
 chapter10/pico/ldr_ads1115_pico.py
 
-Using a Pico & MicroPython to read an LDR  using an ADS1115 ADC
+Using a Pico & MicroPython to read an LDR using an ADS1115 ADC
 
 $ mpremote mount . run ldr_ads1115_pico.py
 
