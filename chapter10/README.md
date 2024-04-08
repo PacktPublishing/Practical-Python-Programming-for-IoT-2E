@@ -18,7 +18,6 @@
 * `pico` folder - Pico MicroPython Code
   
   * `dht_pico.py` - Measure temperature and humidity with a DHT11 or DHT22 Sensor
-  * `ADS1115_pico.py` - A simple module for reading analog input from an ADS1115 ADC
   * `i2c_scan_pico.py` - A utility to detect connected I2C devices
   * `ldr_ads1115_pico.py` - Detect light and dark with an LDR using an ADS1115 ADC
   * `ldr_calibrate_ads1115_pico.py` - Calibrate LDR using an ADS1115 ADC
@@ -26,6 +25,7 @@
   * `moisture_ads1115_pico.py` - Detect moisture using an ADS1115 ADC
   * `moisture_calibrate_ads1115_pico.py` - Calibrate moisture detection using an ADS1115 ADC
   * `moisture_calibration_config_ads1115_pico.py` - Moisture detection calibration (will be overwritten by `moisture_calibrate_ads1115_pico.py`)
+  * `ADS1115_pico.py` - A simple module for reading analog input from an ADS1115 ADC
 
 * `pico\pico_adc` folder - Pico MicroPython Code
 

@@ -7,13 +7,13 @@
 * `rpi` folder - Raspberry Pi Python Code
 
   * `requirements.txt` - Python dependencies required for this chapter
-  * `optocoupler_rpi` - Using an Optocoupler as a switch
-  * `transistor_rpi` - Using a MOSFET as a switch
+  * `optocoupler_rpi.py` - Using an Optocoupler as a switch
+  * `transistor_rpi.py` - Using a MOSFET as a switch
 
 * `pico` folder - Pico MicroPython Code
 
-  * `optocoupler_pico` - Using an Optocoupler as a switch
-  * `transistor_pico` - Using a MOSFET as a switch
+  * `optocoupler_pico.py` - Using an Optocoupler as a switch
+  * `transistor_pico.py` - Using a MOSFET as a switch
 
 ### Datasheets
 

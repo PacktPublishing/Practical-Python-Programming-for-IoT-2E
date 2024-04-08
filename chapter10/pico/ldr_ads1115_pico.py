@@ -54,7 +54,7 @@ def update_trigger(volts):
     """
     Compare the volts parameter to trigger conditions
     TRIGGER_VOLTS +/- TRIGGER_BUFFER and update
-    the global 'triggered' variable as appropiate.
+    the global 'triggered' variable as appropriate.
     """
     global triggered
 

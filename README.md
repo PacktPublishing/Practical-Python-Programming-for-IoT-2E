@@ -6,6 +6,8 @@ The code repository for the _1st Edition_ can be found [here](https://github.com
 
 ## Repository Contents
 
+### [Chapter 7](chapter07) - Electronics 101 for the Software Engineer
+
 ### [Chapter 8](chapter08) - Switching Things On and Off
 
 ### [Chapter 10](chapter10) - Measuring Temperature, Humidity, Moisture and Light Levels
@@ -13,4 +15,3 @@ The code repository for the _1st Edition_ can be found [here](https://github.com
 ### [Chapter 11](chapter11) - Movement with Motors, Servos and Steppers
 
 ### [Chapter 12](chapter12) - Chapter 12 - Measuring Distance and Detecting Movement
-
