@@ -1,0 +1,16 @@
+Adafruit-Blinka==8.39.1
+adafruit-circuitpython-ads1x15==2.2.25
+adafruit-circuitpython-busdevice==5.2.6
+adafruit-circuitpython-connectionmanager==1.0.1
+adafruit-circuitpython-requests==3.2.5
+adafruit-circuitpython-typing==1.10.3
+Adafruit-PlatformDetect==3.62.0
+Adafruit-PureIO==1.1.11
+pigpio==1.78
+pyftdi==0.55.4
+pyserial==3.5
+pyusb==1.2.1
+RPi.GPIO==0.7.1
+rpi_ws281x==5.0.0
+sysv_ipc==1.1.0
+typing_extensions==4.11.0
