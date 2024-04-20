@@ -45,17 +45,15 @@
   * `version1_eventloop_pico` - Folder with __Event-Loop__ version of code
 
     * `main.py` - Main program
-    * `devrun.py` - Helper script for use with mpremote
-    * `lib/logging.py` - Bundled MicroPython Logging Library
+    * `logging.py` - Bundled MicroPython Logging Library
 
   * `version4_asyncio_pico` - Folder with __Asynchronous IO__ (AsyncIO) version of code
 
     * `main.py` - Main program
-    * `devrun.py` - Helper script for use with mpremote
     * `Button.py` - Button Class
     * `LED.py` - LED Class
     * `Pot.py` - Pot (Potentiometer) Class
-    * `lib/logging.py` - Bundled MicroPython Logging Library  
+    * `logging.py` - Bundled MicroPython Logging Library  
 
 ### Datasheets
 
