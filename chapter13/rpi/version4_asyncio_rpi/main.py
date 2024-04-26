@@ -27,9 +27,9 @@ logger = logging.getLogger("Main")
 pi = pigpio.pi()
 
 # GPIOs
-BUTTON_GPIO = 17
-LED1_GPIO = 21
-LED2_GPIO = 22
+BUTTON_GPIO = 16
+LED1_GPIO = 20
+LED2_GPIO = 21
 POT_ADC_CHANNEL = ADS.P0 # P0 maps to output A1 on ADS1115
 
 # Potentiometer / ADC settings (for Pot Class)

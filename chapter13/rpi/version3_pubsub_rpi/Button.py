@@ -28,7 +28,6 @@ class Button:
     # Instance Topic, see
     # self.topic
 
-
     def __init__(self, gpio, pi, name, hold_secs=0.5):
         """ Constructor """
         self.pi = pi
@@ -43,7 +42,7 @@ class Button:
         self.pi.set_glitch_filter(gpio, 10000) # microseconds debounce
 
         # Topic that is specific to this individual BUTTON Instance.
-        self.topic = BUTTON.TOPIC_ROOT + "." + self.name
+        self.topic = Button.TOPIC_ROOT + "." + self.name
 
         self._hold_timer = 0  # For detecting hold events.
         self.pressed = False  # True when button pressed, false when released.

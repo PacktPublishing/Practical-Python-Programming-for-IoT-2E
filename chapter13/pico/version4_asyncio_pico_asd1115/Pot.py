@@ -1,14 +1,15 @@
 """
 chapter13/pico/version4_asyncio_pico/Pot.py
 
-MicroPython Potentiometer Class.
+MicroPython Potentiometer Class for ADS1115 ADC.
 
 Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 from time import sleep
-import machine
+from machine import Pin, I2C
 import logging
 import uasyncio as asyncio
+from ADS1115_pico import ADS1115
 
 logger = logging.getLogger('Pot')
 
@@ -24,10 +25,12 @@ class Pot:
     MAX_POT_VALUE = 65335 - EDGE_ADJUST
 
 
-    def __init__(self, analog_channel, min_value, max_value, callback=None):
+    def __init__(self, analog_channel, min_value, max_value, scl_gpio=17, sda_gpio=16, bus_id=0, callback=None):
         """ Constructor """
         
-        self.adc = machine.ADC(analog_channel)
+        self.analog_channel = analog_channel
+        self.i2c = I2C(bus_id, scl=Pin(scl_gpio), sda=Pin(sda_gpio))
+        self.adc = ADS1115(self.i2c)
 
         # Min and Max values returned by .get_value()
         self.min_value = min_value
@@ -70,8 +73,8 @@ class Pot:
 
     def get_value(self):
         """ Get current value """
-        reading = self.adc.read_u16() # a value 0..65335
-        return round(self._map_value(reading), 1) # Mapped to min_value/max_value range
+        reading = self.adc.read(self.analog_channel) # a value 0..65335
+        return round(self._map_value(reading['value']), 1) # Mapped to min_value/max_value range
 
 if __name__ == '__main__':
     """ Test Pot Class """

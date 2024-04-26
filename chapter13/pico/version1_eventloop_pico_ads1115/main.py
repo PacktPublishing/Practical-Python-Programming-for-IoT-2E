@@ -1,26 +1,19 @@
 """
-chapter13/rpi/version1_eventloop_rpi/main.py
+chapter13/pico/version1_eventloop_pico_asd1115/main.py
 
-Event Loop example with Raspberry Pi & Python.
+Event Loop example with Pico & MicroPython.
 
-Dependencies:
-  pip3 install pigpio adafruit-circuitpython-ads1x15
+$ mpremote mount . run main.py
 
-Built and tested with Python 3.11.22 on Raspberry Pi 5
+Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-import pigpio
-import board
-import busio
-import adafruit_ads1x15.ads1115 as ADS
-from adafruit_ads1x15.analog_in import AnalogIn
-from time import sleep, time
+from utime import sleep, ticks_ms, ticks_diff
+from machine import Pin, I2C
+from ADS1115_pico import ADS1115
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("Main")
-
-pi = pigpio.pi()
-
 
 #
 # Setup LEDs
@@ -32,12 +25,14 @@ MIN_RATE = 0.1 # Seconds
 MAX_RATE = 5   # Seconds
 
 # GPIO's that our LEDs are connected to.
-LED_GPIOS = [20, 21]
+LED1_GPIO = 20
+LED2_GPIO = 21
 
-# Configure LED GPIOs as OUTPUT and turn LEDs off.
-for gpio in LED_GPIOS:
-    pi.set_mode(gpio, pigpio.OUTPUT)
-    pi.write(gpio, pigpio.LOW) # LED Off
+# Configure LED Pins as OUTPUT and turn LEDs off.
+led_pins = [
+    Pin(LED1_GPIO, mode=Pin.OUT, value=0),
+    Pin(LED2_GPIO, mode=Pin.OUT, value=0)
+]
 
 # Variables to manage LEDs and their blinking.
 led_index = 0
@@ -53,33 +48,40 @@ BUTTON_HOLD_SECS = 0.5
 
 # Button GPIO is configured as INPUT with an internal pull-up resistor enabled,
 # thus the button will be Active LOW.
-pi.set_mode(BUTTON_GPIO, pigpio.INPUT)
-pi.set_pull_up_down(BUTTON_GPIO, pigpio.PUD_UP)
-pi.set_glitch_filter(BUTTON_GPIO, 10000) # microseconds debounce
-
-
+button_pin = Pin(BUTTON_GPIO, mode=Pin.IN, pull=Pin.PULL_UP)
 
 #
-# Setup Potentiometer (connected via ADSlll5 ADC Module)
+# Setup Potentiometer (Connected to ADS1115)
 #
-i2c = busio.I2C(board.SCL, board.SDA)
-ads = ADS.ADS1115(i2c)
-pot_channel = AnalogIn(ads, ADS.P0)
 
+# I2C Parameters
+BUS_ID = 0
+SCL_GPIO = 17
+SDA_GPIO = 16
+
+i2c = I2C(BUS_ID, scl=Pin(SCL_GPIO), sda=Pin(SDA_GPIO))
+pot_adc = ADS1115(i2c)
+
+# ADC Channel	ADS1115
+# -----------   ----
+# 0	            A0
+# 1	            A1
+# 2	            A2
+# 3	            A3
+
+POT_ADC_CHANNEL = 0
 
 # Edge adjustments for the Potentiometer's full CW/CCW positions.
 # If you experience value issues when your Potentiometer it is rotated fully
 # clockwise or counter-clockwise, adjust these variables. Please see the
-# ADC example in "@TODO Connecting Your Raspberry Pi and Pico to the Physical World"
-# form more information.
-A_IN_EDGE_ADJ = 0.001
-MIN_A_IN_VOLTS = 0 + A_IN_EDGE_ADJ
-MAX_A_IN_VOLTS = 3.286 - A_IN_EDGE_ADJ
-
+# ADC example in "Chapter @TODO Connecting Your Raspberry Pi & Pico to the Physical World"
+# for a discussion regarding edge value adjustments for Pots and ADC.
+EDGE_ADJUST = 100
+MIN_POT_VALUE = 0 + EDGE_ADJUST
+MAX_POT_VALUE = 65335 - EDGE_ADJUST
 
 def map_value(in_v, in_min, in_max, out_min, out_max):
-    """Helper method to map an input value (v_in)
-    between alternative max/min ranges."""
+    """ Helper method to map an input value (v_in) between alternative max/min ranges. """
     v = (in_v - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
     return max(min(out_max, v), out_min)
 
@@ -91,11 +93,11 @@ def main():
     SLEEP_DELAY = 0.01 # Seconds
 
     try:
-        logger.info("Version 1 - Event Loop Example. Press Control + C To Exit.")
+        logger.info("Version 1 - Pico & MicroPython - Event Loop Example.")
 
-        # Get initial 'voltage' value from Potentiometer/ADC and map into a blinking 'rate'
-        voltage = pot_channel.voltage
-        rate = round(map_value(voltage, MIN_A_IN_VOLTS, MAX_A_IN_VOLTS, MIN_RATE, MAX_RATE), 1)
+        # Get initial reading from Potentiometer/ADC and map into a blinking 'rate'        
+        reading = pot_adc.read(POT_ADC_CHANNEL)
+        rate = round(map_value(reading['value'], MIN_POT_VALUE, MAX_POT_VALUE, MIN_RATE, MAX_RATE), 1)
 
         # Initialise all LEDs
         led_rates = [rate] * len(led_rates) # Initialise blink rate to match POT value.
@@ -118,7 +120,7 @@ def main():
             #
             # Check if the button is pressed or held down.
             #
-            button_pressed = pi.read(BUTTON_GPIO) == pigpio.LOW # Button is Active LOW.       # (2)
+            button_pressed = button_pin.value() == 0 # Button is Active LOW.                  # (2)
 
             if button_pressed and not button_held:
                 # Button has been pressed.
@@ -132,7 +134,7 @@ def main():
 
                     # Update 'led_index' so that Potentiometer adjustments affect the next LED.
                     led_index += 1
-                    if led_index >= len(LED_GPIOS):
+                    if led_index >= len(led_pins):
                         led_index = 0
 
                     if led_index != last_led_index:
@@ -151,9 +153,9 @@ def main():
                 led_rates = [rate] * len(led_rates)
                 led_toggle_at_time = [0] * len(led_rates)
 
-                for gpio in LED_GPIOS:
+                for pin in led_pins:
                     # Turn all LEDs off so that when they start blinking (below) are all synchronised.
-                    pi.write(gpio, pigpio.LOW)
+                    pin.value(0) # LED Off.
 
                 button_hold_timer = 0
                 button_held = True
@@ -161,8 +163,8 @@ def main():
             #
             # Check if the Potentiometer dial been turned.
             #
-            voltage = pot_channel.voltage
-            rate = round(map_value(voltage, MIN_A_IN_VOLTS, MAX_A_IN_VOLTS, MIN_RATE, MAX_RATE), 1)
+            reading = pot_adc.read_u16()
+            rate = round(map_value(reading, MIN_POT_VALUE, MAX_POT_VALUE, MIN_RATE, MAX_RATE), 1)
 
             if rate != last_rate:
                 # Set individual LED (at led_index) to new blinking rate
@@ -173,13 +175,14 @@ def main():
             #
             # Blink the LEDs.
             #
-            now = time()                                                                      # (3)
-            for i in range(len(LED_GPIOS)):
+            now = ticks_ms()                                                                      # (3)
+
+            for i in range(len(led_pins)):
                 if led_rates[i] <= 0:
-                    pi.write(LED_GPIOS[i], pigpio.LOW) # LED Off.
-                elif now >= led_toggle_at_time[i]:
-                    pi.write(LED_GPIOS[i], not pi.read(LED_GPIOS[i])) # Toggle LED
-                    led_toggle_at_time[i] = now + led_rates[i]
+                    led_pins[i].value(0) # LED Off.
+                elif ticks_diff(now, led_toggle_at_time[i]) >= 0:
+                    led_pins[i].toggle() # Toggle LED on/off.
+                    led_toggle_at_time[i] = int(now + (led_rates[i] * 1000))
 
             logger.debug("Sleep...")
             sleep(SLEEP_DELAY)
@@ -187,11 +190,8 @@ def main():
     except KeyboardInterrupt:
 
         # Turn all LEDs off.
-        for gpio in LED_GPIOS:
-            pi.write(gpio, pigpio.LOW)
-
-        pi.stop()
+        for pin in led_pins:
+            pin.value(0) # LED Off.
 
 
-if __name__ == "__main__":
-  main()
+main()

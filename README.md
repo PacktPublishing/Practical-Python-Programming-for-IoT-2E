@@ -15,3 +15,5 @@ The code repository for the _1st Edition_ can be found [here](https://github.com
 ### [Chapter 11](chapter11) - Movement with Motors, Servos and Steppers
 
 ### [Chapter 12](chapter12) - Chapter 12 - Measuring Distance and Detecting Movement
+
+### [Chapter 13](chapter13) - Chapter 13 - Advanced IoT Programming Concepts - Event-Loops, Threads, PubSub &amp; AsyncIO

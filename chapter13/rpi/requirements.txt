@@ -8,6 +8,7 @@ Adafruit-PlatformDetect==3.62.0
 Adafruit-PureIO==1.1.11
 pigpio==1.78
 pyftdi==0.55.4
+Pypubsub==4.0.3
 pyserial==3.5
 pyusb==1.2.1
 RPi.GPIO==0.7.1

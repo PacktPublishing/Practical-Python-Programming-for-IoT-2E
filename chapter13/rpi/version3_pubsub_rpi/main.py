@@ -4,7 +4,7 @@ chapter13/rpi/version3_pubsub_rpi/main.py
 Publisher-Subscriber example with Raspberry Pi & Python.
 
 Dependencies:
-  pip3 install pigpio adafruit-circuitpython-ads1x15
+  pip3 install pigpio PyPubSub adafruit-circuitpython-ads1x15
 
 Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
@@ -16,8 +16,8 @@ import logging
 from pubsub import pub
 
 # Our custom classes
-from BUTTON import BUTTON
-from POT import POT
+from Button import Button
+from Pot import Pot
 from LED import LED
 
 logging.basicConfig(level=logging.INFO)
@@ -26,7 +26,7 @@ logger = logging.getLogger("Main")
 pi = pigpio.pi()
 
 # Button GPIO
-BUTTON_GPIO = 21
+BUTTON_GPIO = 16
 
 # Button state (eg PRESSED, RELEASED, HOLD)
 button_state = None
@@ -35,7 +35,7 @@ button_state = None
 def on_button_message(sender, name, state, topic=pub.AUTO_TOPIC):
     """ Handles button messages
         Parameters:
-          'sender' is a reference to the BUTTON instance that invoked the callback (ie the button variable created below)
+          'sender' is a reference to the Button instance that invoked the callback (ie the button variable created below)
           'name' is the string name we gave the the button
           'state' is the button state, eg PRESSED, RELEASED, HOLD
           'topic' contains topic information. Use topic.getName() to get the topic name"""
@@ -44,7 +44,7 @@ def on_button_message(sender, name, state, topic=pub.AUTO_TOPIC):
 
     button_state = state
 
-    if state == BUTTON.PRESSED:
+    if state == Button.PRESSED:
         led_index += 1
 
         if led_index >= len(LED_TOPICS):
@@ -52,13 +52,13 @@ def on_button_message(sender, name, state, topic=pub.AUTO_TOPIC):
 
         logger.info("Turning the Potentiometer dial will change the rate for LED with topic {}".format(LED_TOPICS[led_index]))
 
-    elif button_state == BUTTON.HOLD:
+    elif button_state == Button.HOLD:
 
         logger.info("Changing rate for all LEDs to {}".format(last_rate))
         pub.sendMessage(LED.TOPIC_ALL_LEDS, rate=last_rate)
 
 
-button = BUTTON(gpio=BUTTON_GPIO,
+button = Button(gpio=BUTTON_GPIO,
                 pi=pi,
                 name="MyButton")
 
@@ -90,8 +90,8 @@ def on_pot_message(sender, name, value, topic=pub.AUTO_TOPIC):
 
 
 
-# Create POT class instances.
-pot = POT(analog_channel=POT_CHANNEL,
+# Create Pot class instances.
+pot = Pot(analog_channel=POT_CHANNEL,
          min_value=MIN_BLINK_RATE_SECS,
          max_value=MAX_BLINK_RATE_SECS,
          poll_secs=POT_POLL_SECS,
@@ -102,8 +102,8 @@ pot = POT(analog_channel=POT_CHANNEL,
 last_rate = pot.get_value()
 
 # Create LED class instances.
-led1 = LED(gpio=13, pi=pi, name="MyLED")
-led2 = LED(gpio=19, pi=pi, name="MyOtherLED")
+led1 = LED(gpio=20, pi=pi, name="MyLED")
+led2 = LED(gpio=21, pi=pi, name="MyOtherLED")
 
 
 # Topic names to communicate with individual LEDs.

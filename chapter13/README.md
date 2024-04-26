@@ -42,6 +42,8 @@
 
 * `pico` folder - Pico MicroPython Code
 
+**Please Note** - The Pico examples in this chapter use the Pico's internal ADC, not an ADS1115 Module.
+
   * `version1_eventloop_pico` - Folder with __Event-Loop__ version of code
 
     * `main.py` - Main program

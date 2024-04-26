@@ -1,5 +1,5 @@
 """
-chapter12/version4_asyncio_pico_asd1115/main.py
+chapter12/version4_asyncio_pico/main.py
 
 Asynchronous IO example with Pico & MicroPython.
 
@@ -23,11 +23,12 @@ LED1_GPIO = 20
 LED2_GPIO = 21
 BUTTON_GPIO = 16
 
-# ADC Channel	GPIO
+# ADC Channel	ADS1115
 # -----------   ----
-# 0	            26
-# 1	            27
-# 2	            28
+# 0	            A0
+# 1	            A1
+# 2	            A2
+# 3	            A3
 
 POT_ADC_CHANNEL = 0
 

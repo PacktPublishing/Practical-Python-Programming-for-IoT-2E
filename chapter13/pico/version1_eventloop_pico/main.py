@@ -42,7 +42,7 @@ led_toggle_at_time = [0, 0]
 #
 # Setup Button
 #
-BUTTON_GPIO = 17
+BUTTON_GPIO = 16
 BUTTON_HOLD_SECS = 0.5
 
 # Button GPIO is configured as INPUT with an internal pull-up resistor enabled,
@@ -52,13 +52,20 @@ button_pin = Pin(BUTTON_GPIO, mode=Pin.IN, pull=Pin.PULL_UP)
 #
 # Setup Potentiometer
 #
-POT_ADC_CHANNEL = 0 # Channel 0 is GPIO Pin 26 on Pico
+
+# ADC Channel	GPIO
+# -----------   ----
+# 0	            26
+# 1	            27
+# 2	            28
+
+POT_ADC_CHANNEL = 0
 pot_adc = ADC(POT_ADC_CHANNEL)
 
 # Edge adjustments for the Potentiometer's full CW/CCW positions.
 # If you experience value issues when your Potentiometer it is rotated fully
 # clockwise or counter-clockwise, adjust these variables. Please see the
-# ADS1115 example in "Chapter 5 Connecting Your Raspberry Pi & Pico to the Physical World"
+# ADC example in "Chapter @TODO Connecting Your Raspberry Pi & Pico to the Physical World"
 # for a discussion regarding edge value adjustments for Pots and ADC.
 EDGE_ADJUST = 100
 MIN_POT_VALUE = 0 + EDGE_ADJUST

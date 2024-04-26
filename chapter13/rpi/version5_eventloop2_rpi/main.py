@@ -32,7 +32,7 @@ logger = logging.getLogger("Main")
 pi = pigpio.pi()
 
 # Button GPIO
-Button_GPIO = 21
+Button_GPIO = 16
 
 def button_handler(the_button, state):
     """ Handles button event.
@@ -90,8 +90,8 @@ pot = Pot(analog_channel=Pot_CHANNEL,
 
 # Create LED class instances.
 LEDS = [
-    LED(gpio=13, pi=pi),
-    LED(gpio=19, pi=pi)
+    LED(gpio=20, pi=pi),
+    LED(gpio=21, pi=pi)
 ]
 
 

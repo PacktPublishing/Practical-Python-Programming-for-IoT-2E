@@ -32,8 +32,8 @@ class Pot:
     # Edge adjustments for the Potentiometer's full CW/CCW positions.
     # If you experience value issues when your Potentiometer it is rotated fully
     # clockwise or counter-clockwise, adjust these variables. Please see the
-    # ADS1115 example in "Chapter 5 Connecting Your Raspberry Pi to the Physical World"
-    #
+    # ADC example in "@TODO Connecting Your Raspberry Pi and Pico to the Physical World"
+    
     # You could consider making these constructor parameters.
     A_IN_EDGE_ADJ = 0.001
     MIN_A_IN_VOLTS = 0 + A_IN_EDGE_ADJ
