@@ -28,8 +28,8 @@ pi = pigpio.pi()
 
 # Maximum and minimum "blinking" rates for the LEDs. These values will be the
 # mapped values returned by our Potentiometer.
-MIN_RATE = 0.1 # Seconds
-MAX_RATE = 5   # Seconds
+MIN_RATE = 0 # Seconds
+MAX_RATE = 5 # Seconds
 
 # GPIO's that our LEDs are connected to.
 LED_GPIOS = [20, 21]

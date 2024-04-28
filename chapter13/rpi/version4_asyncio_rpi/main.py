@@ -32,8 +32,8 @@ LED2_GPIO = 21
 POT_ADC_CHANNEL = ADS.P0 # P0 maps to output A1 on ADS1115
 
 # Potentiometer / ADC settings (for Pot Class)
-MIN_BLINK_RATE_SECS = 0.1 # Minimum value returnable by Pot class
-MAX_BLINK_RATE_SECS = 5   # Maximum value returnable by Pot class
+MIN_BLINK_RATE_SECS = 0 # Minimum value returnable by Pot class
+MAX_BLINK_RATE_SECS = 5 # Maximum value returnable by Pot class
 
 
 def button_handler(the_button, state):
@@ -96,12 +96,12 @@ LEDS = [
 led_index = 0
 
 
-async def main():                                                        # (1)
+async def create_asyncio_tasks():
     """
     Setup and register asyncio tasks.
     """
 
-    tasks = []
+    tasks = []                                                           # (1)
 
     # Register the LEDs
     for led in LEDS:                                                     # (2)
@@ -122,7 +122,8 @@ async def main():                                                        # (1)
             button.run()
         ))
 
-    await asyncio.gather(*tasks)  # *tasks unpacks list into args for .gather()
+    # *tasks unpacks list into args for .gather()
+    await asyncio.gather(*tasks)                                         # (5)
 
 
 if __name__ == "__main__":
@@ -140,7 +141,7 @@ if __name__ == "__main__":
         logger.info("Turning the Potentiometer dial will change the rate for LED #{}".format(led_index))
 
         ## Asynchronous IO (Python 3.7+)
-        asyncio.run(main())                                                # (5)
+        asyncio.run(create_asyncio_tasks())                              # (6)
 
     except KeyboardInterrupt:
         LED.set_rate_all(0) # Turn all LEDs off.
