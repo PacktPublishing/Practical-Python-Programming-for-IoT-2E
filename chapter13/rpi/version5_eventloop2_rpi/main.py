@@ -64,9 +64,9 @@ button = Button(gpio=Button_GPIO,
 
 
 # Potentiometer / ADC settings (for Pot Class)
-Pot_CHANNEL = ADS.P0    # P0 maps to output A1 on ADS1115
-MIN_BLINK_RATE_SECS = 0 # Minimum value returnable by Pot class
-MAX_BLINK_RATE_SECS = 5 # Maximum value returnable by Pot class
+Pot_CHANNEL = ADS.P0      # P0 maps to output A1 on ADS1115
+MIN_BLINK_RATE_SECS = 0.1 # Minimum value returnable by Pot class
+MAX_BLINK_RATE_SECS = 5   # Maximum value returnable by Pot class
 
 
 def pot_handler(the_pot, value):

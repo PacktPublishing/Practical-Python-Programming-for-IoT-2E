@@ -10,11 +10,10 @@ Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 import adafruit_ads1x15.ads1115 as ADS
 import pigpio
-
 from time import sleep
 import asyncio
 import logging
-from platform import platform
+import sys
 
 # Our custom classes
 from Button import Button
@@ -33,8 +32,9 @@ LED2_GPIO = 21
 POT_ADC_CHANNEL = ADS.P0 # P0 maps to output A1 on ADS1115
 
 # Potentiometer / ADC settings (for Pot Class)
-MIN_BLINK_RATE_SECS = 0 # Minimum value returnable by Pot class
-MAX_BLINK_RATE_SECS = 5 # Maximum value returnable by Pot class
+MIN_BLINK_RATE_SECS = 0.1 # Minimum value returnable by Pot class
+MAX_BLINK_RATE_SECS = 5   # Maximum value returnable by Pot class
+
 
 def button_handler(the_button, state):
     """ Handles button event.
@@ -58,10 +58,10 @@ def button_handler(the_button, state):
         LED.set_rate_all(rate)
 
 
-# Create Button class instances and register button_handler() callback with it.
+# Create BUTTON class instances and register button_handler() callback with it.
 button = Button(gpio=BUTTON_GPIO,
-               pi=pi,
                hold_secs=0.5,
+               pi=pi,
                callback=button_handler)
 
 
@@ -96,36 +96,51 @@ LEDS = [
 led_index = 0
 
 
+async def main():                                                        # (1)
+    """
+    Setup and register asyncio tasks.
+    """
+
+    tasks = []
+
+    # Register the LEDs
+    for led in LEDS:                                                     # (2)
+        tasks.append(
+            asyncio.create_task(
+                led.run()
+            ))
+
+    # Register Potentiometer
+    tasks.append(                                                        # (3)
+          asyncio.create_task(
+              pot.run()
+          ))
+
+    # Register Button
+    tasks.append(                                                        # (4)
+        asyncio.create_task(
+            button.run()
+        ))
+
+    await asyncio.gather(*tasks)  # *tasks unpacks list into args for .gather()
+
+
 if __name__ == "__main__":
+
+    assert sys.version_info >= (3, 7), "Python 3.7+ Required"
 
     try:
         logger.info("Version 4 - Raspberry Pi & Python - Asynchronous IO Example. Press Control + C To Exit.")
 
         # Initialise all LEDs
         rate = pot.get_value()
-        LED.set_rate_all(rate)  # Initialise all LEDS based on POT value.
+        LED.set_rate_all(rate)  # Initialise all LEDS based on Pot value.
         logger.info("Setting rate for all LEDs to {}".format(rate))
 
         logger.info("Turning the Potentiometer dial will change the rate for LED #{}".format(led_index))
 
-
-        ##
-        ## The Asynchronous IO Part...
-        ##
-
-        # Get (create) an event loop.
-        loop = asyncio.get_event_loop()                                                  # (1)
-
-        # Register the LEDs.
-        for led in LEDS:
-            loop.create_task(led.run())                                                  # (2)
-
-        # Register Button and Pot
-        loop.create_task(pot.run())                                                      # (3)
-        loop.create_task(button.run())                                                   # (4)
-
-        # Start the event loop.
-        loop.run_forever()                                                               # (5)
+        ## Asynchronous IO (Python 3.7+)
+        asyncio.run(main())                                                # (5)
 
     except KeyboardInterrupt:
         LED.set_rate_all(0) # Turn all LEDs off.
