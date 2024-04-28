@@ -33,8 +33,8 @@ BUTTON_GPIO = 16
 POT_ADC_CHANNEL = 0
 
 # Potentiometer / ADC settings (for POT Class)
-MIN_BLINK_RATE_SECS = 0 # Minimum value returnable by POT class
-MAX_BLINK_RATE_SECS = 5 # Maximum value returnable by POT class
+MIN_BLINK_RATE_SECS = 0.1 # Minimum value returnable by POT class
+MAX_BLINK_RATE_SECS = 5   # Maximum value returnable by POT class
 
 def button_handler(the_button, state):
     """ Handles button event.

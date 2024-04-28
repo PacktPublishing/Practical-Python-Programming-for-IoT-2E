@@ -67,7 +67,7 @@ pot_adc = ADC(POT_ADC_CHANNEL)
 # clockwise or counter-clockwise, adjust these variables. Please see the
 # ADC example in "Chapter @TODO Connecting Your Raspberry Pi & Pico to the Physical World"
 # for a discussion regarding edge value adjustments for Pots and ADC.
-EDGE_ADJUST = 100
+EDGE_ADJUST = 1000
 MIN_POT_VALUE = 0 + EDGE_ADJUST
 MAX_POT_VALUE = 65535 - EDGE_ADJUST
 
