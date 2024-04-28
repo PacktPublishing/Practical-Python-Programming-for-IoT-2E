@@ -56,8 +56,8 @@ button_pin = Pin(BUTTON_GPIO, mode=Pin.IN, pull=Pin.PULL_UP)
 
 # I2C Parameters
 BUS_ID = 0
-SCL_GPIO = 17
-SDA_GPIO = 16
+SCL_GPIO = 13
+SDA_GPIO = 12
 
 i2c = I2C(BUS_ID, scl=Pin(SCL_GPIO), sda=Pin(SDA_GPIO))
 pot_adc = ADS1115(i2c)
@@ -78,7 +78,7 @@ POT_ADC_CHANNEL = 0
 # for a discussion regarding edge value adjustments for Pots and ADC.
 EDGE_ADJUST = 100
 MIN_POT_VALUE = 0 + EDGE_ADJUST
-MAX_POT_VALUE = 65335 - EDGE_ADJUST
+MAX_POT_VALUE = 26400 - EDGE_ADJUST
 
 def map_value(in_v, in_min, in_max, out_min, out_max):
     """ Helper method to map an input value (v_in) between alternative max/min ranges. """
@@ -163,9 +163,9 @@ def main():
             #
             # Check if the Potentiometer dial been turned.
             #
-            reading = pot_adc.read_u16()
-            rate = round(map_value(reading, MIN_POT_VALUE, MAX_POT_VALUE, MIN_RATE, MAX_RATE), 1)
-
+            reading = pot_adc.read(POT_ADC_CHANNEL)
+            rate = round(map_value(reading['value'], MIN_POT_VALUE, MAX_POT_VALUE, MIN_RATE, MAX_RATE), 1)
+            
             if rate != last_rate:
                 # Set individual LED (at led_index) to new blinking rate
                 logger.info("Changing LED #{} rate to {}".format(led_index, rate))

@@ -22,10 +22,10 @@ class Pot:
     # for a discussion regarding edge value adjustments for Pots and ADC.
     EDGE_ADJUST = 100
     MIN_POT_VALUE = 0 + EDGE_ADJUST
-    MAX_POT_VALUE = 65335 - EDGE_ADJUST
+    MAX_POT_VALUE = 26400 - EDGE_ADJUST
 
 
-    def __init__(self, analog_channel, min_value, max_value, scl_gpio=17, sda_gpio=16, bus_id=0, callback=None):
+    def __init__(self, analog_channel, min_value, max_value, scl_gpio=13, sda_gpio=12, bus_id=0, callback=None):
         """ Constructor """
         
         self.analog_channel = analog_channel
@@ -73,7 +73,7 @@ class Pot:
 
     def get_value(self):
         """ Get current value """
-        reading = self.adc.read(self.analog_channel) # a value 0..65335
+        reading = self.adc.read(self.analog_channel)
         return round(self._map_value(reading['value']), 1) # Mapped to min_value/max_value range
 
 if __name__ == '__main__':

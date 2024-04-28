@@ -69,7 +69,7 @@ pot_adc = ADC(POT_ADC_CHANNEL)
 # for a discussion regarding edge value adjustments for Pots and ADC.
 EDGE_ADJUST = 100
 MIN_POT_VALUE = 0 + EDGE_ADJUST
-MAX_POT_VALUE = 65335 - EDGE_ADJUST
+MAX_POT_VALUE = 65535 - EDGE_ADJUST
 
 def map_value(in_v, in_min, in_max, out_min, out_max):
     """ Helper method to map an input value (v_in) between alternative max/min ranges. """
