@@ -18,12 +18,11 @@ class Pot:
     # Edge adjustments for the Potentiometer's full CW/CCW positions.
     # If you experience value issues when your Potentiometer it is rotated fully
     # clockwise or counter-clockwise, adjust these variables. Please see the
-    # ADC example in "@TODO Connecting Your Raspberry Pi & Pico to the Physical World"
+    # ADC example in "Chapter @TODO Connecting Your Raspberry Pi & Pico to the Physical World"
     # for a discussion regarding edge value adjustments for Pots and ADC.
-    EDGE_ADJUST = 100
-    MIN_POT_VALUE = 0 + EDGE_ADJUST
-    MAX_POT_VALUE = 26400 - EDGE_ADJUST
-
+    A_IN_EDGE_ADJ = 0.001
+    MIN_A_IN_VOLTS = 0 + A_IN_EDGE_ADJ
+    MAX_A_IN_VOLTS = 3.286 - A_IN_EDGE_ADJ
 
     def __init__(self, analog_channel, min_value, max_value, scl_gpio=13, sda_gpio=12, bus_id=0, callback=None):
         """ Constructor """
@@ -65,16 +64,16 @@ class Pot:
             await asyncio.sleep(0)
 
 
-    def _map_value(self, in_v):
+    def _map_value(self, in_v):        
         """ Helper method to map an input value (v_in) between alternative max/min ranges. """
-        v = (in_v - self.MIN_POT_VALUE) * (self.max_value - self.min_value) / (self.MAX_POT_VALUE - self.MIN_POT_VALUE) + self.min_value
+        v = (in_v - self.MIN_A_IN_VOLTS) * (self.max_value - self.min_value) / (self.MAX_A_IN_VOLTS - self.MIN_A_IN_VOLTS) + self.min_value
         return max(min(self.max_value, v), self.min_value)
 
 
     def get_value(self):
         """ Get current value """
         reading = self.adc.read(self.analog_channel)
-        return round(self._map_value(reading['value']), 1) # Mapped to min_value/max_value range
+        return round(self._map_value(reading['volts']), 1) # Mapped to min_value/max_value range
 
 if __name__ == '__main__':
     """ Test Pot Class """

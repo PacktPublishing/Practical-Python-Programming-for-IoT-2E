@@ -1,4 +1,5 @@
 """
+ADS1115 Library V1
 A simple module for reading analog input from an ADS1115 ADC.
 
 This module was created and tested for the following configuration:
@@ -32,7 +33,8 @@ for a 3v3 reference the max expected raw
 value from the ADC will be: 
 32767 / 4.096 * 3.3 = ~26400
 """
-VOLTAGE_REF = 4.096 # ADC default gain.
+VOLTAGE_REF = 3.3
+VOLTAGE_GAIN_REF = 4.096 # ADC default gain.
 MAX_VALUE = 32767   # Max raw value based on gain for single ended mode ADC.
 
 class ADS1115:
@@ -104,11 +106,9 @@ class ADS1115:
         self.i2c.writeto(self.address, bytearray([1] + config))
 
         value = result[0] << 8 | result[1]
-        volts = value / MAX_VALUE * VOLTAGE_REF 
+        volts = value / MAX_VALUE * VOLTAGE_GAIN_REF 
 
         return {
             "value": value,
             "volts": round(volts, 2)
         }
-
-

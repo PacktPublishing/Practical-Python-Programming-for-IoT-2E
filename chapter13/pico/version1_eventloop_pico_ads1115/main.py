@@ -76,9 +76,9 @@ POT_ADC_CHANNEL = 0
 # clockwise or counter-clockwise, adjust these variables. Please see the
 # ADC example in "Chapter @TODO Connecting Your Raspberry Pi & Pico to the Physical World"
 # for a discussion regarding edge value adjustments for Pots and ADC.
-EDGE_ADJUST = 100
-MIN_POT_VALUE = 0 + EDGE_ADJUST
-MAX_POT_VALUE = 26400 - EDGE_ADJUST
+A_IN_EDGE_ADJ = 0.001
+MIN_A_IN_VOLTS = 0 + A_IN_EDGE_ADJ
+MAX_A_IN_VOLTS = 3.286 - A_IN_EDGE_ADJ
 
 def map_value(in_v, in_min, in_max, out_min, out_max):
     """ Helper method to map an input value (v_in) between alternative max/min ranges. """
@@ -97,7 +97,7 @@ def main():
 
         # Get initial reading from Potentiometer/ADC and map into a blinking 'rate'        
         reading = pot_adc.read(POT_ADC_CHANNEL)
-        rate = round(map_value(reading['value'], MIN_POT_VALUE, MAX_POT_VALUE, MIN_RATE, MAX_RATE), 1)
+        rate = round(map_value(reading['volts'], MIN_A_IN_VOLTS, MAX_A_IN_VOLTS, MIN_RATE, MAX_RATE), 1)
 
         # Initialise all LEDs
         led_rates = [rate] * len(led_rates) # Initialise blink rate to match POT value.
@@ -164,7 +164,7 @@ def main():
             # Check if the Potentiometer dial been turned.
             #
             reading = pot_adc.read(POT_ADC_CHANNEL)
-            rate = round(map_value(reading['value'], MIN_POT_VALUE, MAX_POT_VALUE, MIN_RATE, MAX_RATE), 1)
+            rate = round(map_value(reading['volts'], MIN_A_IN_VOLTS, MAX_A_IN_VOLTS, MIN_RATE, MAX_RATE), 1)
             
             if rate != last_rate:
                 # Set individual LED (at led_index) to new blinking rate
