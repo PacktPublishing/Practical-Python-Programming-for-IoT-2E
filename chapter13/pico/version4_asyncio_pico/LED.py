@@ -85,15 +85,15 @@ class LED:
         if secs <= 0:
             self.toggle_at = 0
 
-            # Turn LED Off. @TODO Cleanup
+            # Turn LED Off.
             # self.pin.off() # or 
-            self.pin.value(0) # or 
-            # self.pin.low()
-
+            # self.pin.low() # or
+            self.pin.value(0)
+            
         else:            
             self.toggle_at = int(ticks_ms() + (self.blink_rate_secs * 1000)) # Seconds to Milliseconds
 
-            # Turn LED On. @TODO Cleanup
+            # Turn LED On.
             # self.pin.on() # or
             # self.pin.high() # or
             self.pin.value(1)

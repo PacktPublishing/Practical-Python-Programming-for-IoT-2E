@@ -42,20 +42,33 @@
 
 * `pico` folder - Pico MicroPython Code
 
-**Please Note** - The Pico examples in this chapter use the Pico's internal ADC, not an ADS1115 Module.
-
-  * `version1_eventloop_pico` - Folder with __Event-Loop__ version of code
+  * `version1_eventloop_pico` - Folder with __Event-Loop__ version of code using the internal Pico ADC
 
     * `main.py` - Main program
     * `logging.py` - Bundled MicroPython Logging Library
 
-  * `version4_asyncio_pico` - Folder with __Asynchronous IO__ (AsyncIO) version of code
+  * `version1_eventloop_pico_ads1115` - Folder with __Event-Loop__ version of code using an external ADS1115 ADC
+
+    * `main.py` - Main program
+    * `logging.py` - Bundled MicroPython Logging Library
+
+  * `version4_asyncio_pico` - Folder with __Asynchronous IO__ (AsyncIO) version of code using the internal Pico ADC
 
     * `main.py` - Main program
     * `Button.py` - Button Class
     * `LED.py` - LED Class
     * `Pot.py` - Pot (Potentiometer) Class
-    * `logging.py` - Bundled MicroPython Logging Library  
+    * `logging.py` - Bundled MicroPython Logging Library
+    * `ADS1115_pico.py` - A simple module for reading analog input from an ADS1115 ADC
+
+* `version4_asyncio_pico_ads1115` - Folder with __Asynchronous IO__ (AsyncIO) version of code using an external ADS1115 ADC
+
+    * `main.py` - Main program
+    * `Button.py` - Button Class
+    * `LED.py` - LED Class
+    * `Pot.py` - Pot (Potentiometer) Class
+    * `logging.py` - Bundled MicroPython Logging Library
+    * `ADS1115_pico.py` - A simple module for reading analog input from an ADS1115 ADC
 
 ### Datasheets
 
