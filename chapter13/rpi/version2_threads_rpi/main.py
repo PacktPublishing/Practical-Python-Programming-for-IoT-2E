@@ -32,7 +32,7 @@ BUTTON_GPIO = 16
 def button_handler(the_button, state):
     """ Handles button event.
         Parameters:
-          'the_button' is a reference to the BUTTON instance that invoked the callback (ie the button variable created below)
+          'the_button' is a reference to the Button instance that invoked the callback (ie the button variable created below)
           'state' is the button state, eg PRESSED, RELEASED, HOLD """
 
     global led_index
@@ -67,7 +67,7 @@ MAX_BLINK_RATE_SECS = 5 # Maximum value returnable by Pot class
 def pot_handler(the_pot, value):
     """ Handles potentiometer event.
         Parameters:
-          'the_pot' is a reference to the POT instance that invoked the callback (ie the pot variable created below)
+          'the_pot' is a reference to the Pot instance that invoked the callback (ie the pot variable created below)
           'value' is the mapped value (ie in the range MIN_BLINK_RATE_SECS..MAX_BLINK_RATE_SECS) """
 
     logger.info("Changing LED #{} rate to {}".format(led_index, value))

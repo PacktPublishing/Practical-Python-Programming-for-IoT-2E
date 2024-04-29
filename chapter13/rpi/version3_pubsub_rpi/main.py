@@ -73,7 +73,7 @@ MAX_BLINK_RATE_SECS = 5 # Maximum value returnable by POT class
 def on_pot_message(sender, name, value, topic=pub.AUTO_TOPIC):
     """ Handles Potentiometer messages
         Parameters:
-          'sender' is a reference to the POT instance that invoked the callback (ie the pot variable created below)
+          'sender' is a reference to the Pot instance that invoked the callback (ie the pot variable created below)
           'name' is the string name we gave the the Potentiometer
           'value' is the Potentiometer current value
           'topic' contains topic information. Use topic.getName() to get the topic name"""

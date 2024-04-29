@@ -41,7 +41,7 @@ class Button:
         self.pi.set_pull_up_down(gpio, pigpio.PUD_UP)
         self.pi.set_glitch_filter(gpio, 10000) # microseconds debounce
 
-        # Topic that is specific to this individual BUTTON Instance.
+        # Topic that is specific to this individual Button Instance.
         self.topic = Button.TOPIC_ROOT + "." + self.name
 
         self._hold_timer = 0  # For detecting hold events.
