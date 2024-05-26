@@ -6,6 +6,8 @@ The code repository for the _1st Edition_ can be found [here](https://github.com
 
 ## Repository Contents
 
+### [Chapter 3](chapter03) - Networking with RESTful APIs
+
 ### [Chapter 7](chapter07) - Electronics 101 for the Software Engineer
 
 ### [Chapter 8](chapter08) - Switching Things On and Off
