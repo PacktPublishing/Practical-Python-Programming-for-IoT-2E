@@ -1,18 +1,17 @@
 """
-File: chapter03/flask_api_server.py
+chapter03/rpi/flask_api_server.py
 
-A HTTP RESTFul API server to control an LED built using Flask-RESTful.
+Flask-RESTFul API Server example with Raspberry Pi & Python.
 
 Dependencies:
-  pip3 install gpiozero pigpio flask-restful
+  pip3 install pigpio flask flask-restful
 
-Built and tested with Python 3.7 on Raspberry Pi 4 Model B
+Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 import logging
 from flask import Flask, request, render_template                                    # (1)
 from flask_restful import Resource, Api, reqparse, inputs                            # (2)
-from gpiozero import PWMLED, Device                                                  # (3)
-from gpiozero.pins.pigpio import PiGPIOFactory
+import pigpio                                                                        # (3)
 
 
 # Initialize Logging
@@ -21,30 +20,29 @@ logger = logging.getLogger('main')  # Logger for this module
 logger.setLevel(logging.INFO) # Debugging for this file.
 
 
-# Initialize GPIOZero
-Device.pin_factory = PiGPIOFactory() #set GPIOZero to use PiGPIO by default
-
-# Flask & Flask-RESTful instance variables
-app = Flask(__name__) # Core Flask app.                                              # (4)
-api = Api(app) # Flask-RESTful extension wrapper                                     # (5)
-
-
 # Global variables
 LED_GPIO_PIN = 21
-led = None # PWMLED Instance. See init_led()
+pi = pigpio.pi()
 state = {                                                                            # (6)
     'level': 50 # % brightless of LED.
 }
 
-"""
-GPIO Related Functions
-"""
-def init_led():
-    """Create and initialise an PWMLED Object"""
-    global led
-    led = PWMLED(LED_GPIO_PIN)
-    led.value = state['level'] / 100                                                 # (7)
+# 8000 max hardware timed frequency by default pigpiod configuration.
+pi.set_PWM_frequency(LED_GPIO_PIN, 8000)
 
+# We set the range to 0..100 to mimic 0%..100%. This means
+# calls to pi.set_PWM_dutycycle(GPIO_PIN, duty_cycle) now
+# take a value in the range 0 to 100 as the duty_cycle
+# parameter rather than the default range of 0..255.
+pi.set_PWM_range(LED_GPIO_PIN, 100)                                                  # (@TODO)
+
+# Initialise LED brightness. Our PWM range is 0..100,
+# therefore our brightness level % maps directly.
+pi.set_PWM_dutycycle(LED_GPIO_PIN, state['level'])
+
+# Flask & Flask-RESTful instance variables
+app = Flask(__name__) # Core Flask app.                                              # (4)
+api = Api(app) # Flask-RESTful extension wrapper                                     # (5)
 
 """
 Flask & Flask-Restful Related Functions
@@ -87,14 +85,12 @@ class LEDControl(Resource):  # (10)
 
         # Set PWM duty cycle to adjust brightness level.
         state['level'] = args.level                                                  # (16)
-        led.value = state['level'] / 100                                             # (17)
+        pi.set_PWM_dutycycle(LED_GPIO_PIN, state['level'])                           # (17)
         logger.info("LED brightness level is " + str(state['level']))
 
         return state                                                                 # (18)
 
 
-# Initialise Module.
-init_led()
 # Register Flask-RESTful resource and mount to server end point /led
 api.add_resource(LEDControl, '/led')                                                 # (19)
 

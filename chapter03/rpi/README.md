@@ -5,16 +5,19 @@
 * `rpi` folder - Raspberry Pi Python Code
 
   * `requirements.txt` - Python dependencies required for this chapter
-  * `flask_api_server.py` - RESTful API Server to control a LED
-  * `flask_ws_server.py` - Web Socket Server API server to control a LED
-  * `templates/index_api_client.html` - Web client for `flask_api_server.py`
-  * `templates/index_ws_client.html` - Web client for `flask_ws_server.py`
-  * `static/jquery.min.js` - JQuery JavaScript library for both web clients
-  * `static/socket.io` - Socket.io JavaScript library for `index_ws_client.html`
+  * `flask_api_server_rpi.py` - RESTful API Server to control a LED
+  * `templates/index_api_client.html` - Web client for `flask_api_server_rpi.py`
+  * `static/jquery.min.js` - JQuery JavaScript library for the web client
 
 * `pico` folder - Pico MicroPython Code
 
-  * TODO
+  * `microdot_api_server_pico.py` - RESTful API Server to control a LED
+  * `templates/index_api_client.html` - Web client for `microdot_api_server_pico.py`
+  * `static/jquery.min.js` - JQuery JavaScript library for the web client
+  * `picowifi.py` - Helper code for connecting Pico W to Wireless network
+  * `wifi_credentials.example.py` - example WiFi credentials file
+  * `microdot` - this folder contains the Microdot library and dependencies
+  * `utemplates` - this folder contains the utemplates library required my Microdot
 
 ### Datasheets
 

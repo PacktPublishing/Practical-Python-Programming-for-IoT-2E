@@ -1,0 +1,14 @@
+aniso8601==9.0.1
+blinker==1.8.2
+click==8.1.7
+colorzero==2.0
+Flask==3.0.3
+Flask-RESTful==0.3.10
+gpiozero==2.0.1
+itsdangerous==2.2.0
+Jinja2==3.1.4
+MarkupSafe==2.1.5
+pigpio==1.78
+pytz==2024.1
+six==1.16.0
+Werkzeug==3.0.3
