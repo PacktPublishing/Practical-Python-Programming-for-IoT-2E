@@ -17,7 +17,7 @@
 
 <head>
     <title>Microdot RESTful API Example for Pico W</title>
-    <script src="/static/jquery.min.js"></script> <!--(1)-->
+    <script src="/static/jquery.min.js"></script>                                    <!--(1)-->
     <script type="text/javascript">
 
         // GET request to server to retrieve LED state.
@@ -69,12 +69,12 @@
 </head>
 
 <body>
-    <h1>Flask RESTful API Example</h1>
+    <h1>Microdot RESTful API Example</h1>
     {% if pin %}
-    LED is connected to GPIO {{pin}}<br> <!--(11)-->
+    LED is connected to GPIO {{pin}}<br>                                             <!--(11)-->
     {% endif %}
     Brightness: <span id="brightnessLevel"></span>%<br>
-    <input type="range" min="0" max="100" value="0" class="brightnessLevel"> <!--(12)-->
+    <input type="range" min="0" max="100" value="0" class="brightnessLevel">         <!--(12)-->
 </body>
 
 </html>
