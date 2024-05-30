@@ -10,7 +10,7 @@ Basic Usage:
     if ip:
         print("we're connected!")
 
-    disconnectc_wifi()
+    disconnect_wifi()
 
 API Document for MicroPython network module: https://docs.micropython.org/en/v1.22.0/library/network.WLAN.html
 """
