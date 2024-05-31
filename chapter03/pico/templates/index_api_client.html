@@ -4,13 +4,13 @@
     and it must be the first line in the file.
     
     It defines the arguements used in the page. If it is missing you will receive
-    the error "NameError: name 'pin' isn't defined" on the terminal console as you load
+    the error "NameError: name 'gpio' isn't defined" on the terminal console as you load
     this page in a browser.
 
-    In microdot_server_pico.py the following code snippet is where the pin arguement is passed to this page:
+    In microdot_server_pico.py the following code snippet is where the gpio arguement is passed to this page:
     
     async def index(request):
-        return Template('index_api_client.html').render(gpio=LED_GPIO_PIN), {'Content-Type': 'text/html'}
+        return Template('index_api_client.html').render(gpio=LED_GPIO), {'Content-Type': 'text/html'}
 -->
 <!DOCTYPE html>
 <html>
@@ -70,9 +70,7 @@
 
 <body>
     <h1>Microdot RESTful API Example</h1>
-    {% if pin %}
     LED is connected to GPIO {{gpio}}<br>                                            <!--(11)-->
-    {% endif %}
     Brightness: <span id="brightnessLevel"></span>%<br>
     <input type="range" min="0" max="100" value="0" class="brightnessLevel">         <!--(12)-->
 </body>
