@@ -53,21 +53,32 @@ else:
     # Create Microdot server instance
     app = Microdot()                                                                 # (12)
 
-    @app.route('/')                                                                  # (13)
+    # HTTP GET default route.
+    # This could alternativly be written as @app.route('/', methods=['GET'])
+    @app.get('/')                                                                    # (13)
     async def index(request):
-        return Template('index_api_client.html').render(pin=LED_GPIO), {'Content-Type': 'text/html'}
+        return Template('index_api_client.html').render(gpio=LED_GPIO), {'Content-Type': 'text/html'}
     
-    @app.route('/static/<path:path>')                                                # (14)
+    # HTTP GET route for serving static content.
+    # This could alternativly be written as
+    # @app.route('/static/<path:path>', methods=['GET'])
+    @app.get('/static/<path:path>')                                                  # (14)
     async def static(request, path):
         if '..' in path:
             # Directory traversal is not allowed
             return 'Not found', 404
         return send_file('static/' + path, max_age=86400)    
 
+    # HTTP GET route for getting LED state.
+    # This could alternativly be written as
+    # @app.route('/led', methods=['GET'])
     @app.get('/led')                                                                 # (15)
     async def led_get(request):
         return state
 
+    # HTTP POST route for setting LED state.
+    # This could alternativly be written as
+    # @app.route('/led', methods=['POST'])
     @app.post('/led')                                                                # (16)
     async def led_post(request):
         level = int(request.json['level']) # Brightness 0-100%

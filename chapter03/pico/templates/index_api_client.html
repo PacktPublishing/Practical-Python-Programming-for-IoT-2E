@@ -1,6 +1,6 @@
-{% args pin %}
+{% args gpio %}
 <!-- 
-    The above {% args pin %} is required by the utemplate engine used by Microdot,
+    The above {% args gpio %} is required by the utemplate engine used by Microdot,
     and it must be the first line in the file.
     
     It defines the arguements used in the page. If it is missing you will receive
@@ -10,7 +10,7 @@
     In microdot_server_pico.py the following code snippet is where the pin arguement is passed to this page:
     
     async def index(request):
-        return Template('index_api_client.html').render(pin=LED_GPIO_PIN), {'Content-Type': 'text/html'}
+        return Template('index_api_client.html').render(gpio=LED_GPIO_PIN), {'Content-Type': 'text/html'}
 -->
 <!DOCTYPE html>
 <html>
@@ -71,7 +71,7 @@
 <body>
     <h1>Microdot RESTful API Example</h1>
     {% if pin %}
-    LED is connected to GPIO {{pin}}<br>                                             <!--(11)-->
+    LED is connected to GPIO {{gpio}}<br>                                            <!--(11)-->
     {% endif %}
     Brightness: <span id="brightnessLevel"></span>%<br>
     <input type="range" min="0" max="100" value="0" class="brightnessLevel">         <!--(12)-->
