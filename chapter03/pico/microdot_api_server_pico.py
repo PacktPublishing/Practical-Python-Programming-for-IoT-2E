@@ -81,11 +81,16 @@ else:
     # @app.route('/led', methods=['POST'])
     @app.post('/led')                                                                # (16)
     async def led_post(request):
+
+        # Check that level exists in request json parameter
+        if not 'level' in request.json:
+            return "property 'level' expected, and must be between 0 and 100", 400
+
         level = int(request.json['level']) # Brightness 0-100%
 
         # If level is not within expected value range 0..100, return error
         if level < 0 or  level > 100:
-            return "property 'level' expected to be between 0 and 100", 400
+            return "property 'level' expected, and must be between 0 and 100", 400
 
         # Update state and set LED brightness.
         state['level'] = level
