@@ -2,6 +2,9 @@
 
 ## Chapter 8 - Turning Things On and Off
 
+* `breadboard_layout.fzz` - Fritzing breadboard layouts circuits for Raspberry Pi &amp; Pico
+* `breadboard_layout.png` - Breadboard layouts circuits for Raspberry Pi &amp; Pico
+
 ### Source Code
 
 * `rpi` folder - Raspberry Pi Python Code
@@ -26,3 +29,7 @@
 ### Post Publication Updates and Errata
 
 None
+
+### Breadboard Layouts
+
+![Breadboard Layouts](./breadboard_layout.png)
