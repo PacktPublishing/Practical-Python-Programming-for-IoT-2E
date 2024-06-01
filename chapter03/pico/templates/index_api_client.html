@@ -3,19 +3,11 @@
     The above {% args gpio %} is required by the utemplate engine used by Microdot,
     and it must be the first line in the file.
     
-<<<<<<< HEAD
-    It defines the arguements used in the page. If it is missing you will receive
-    the error "NameError: name 'gpio' isn't defined" on the terminal console as you load
-    this page in a browser.
-
-    In microdot_server_pico.py the following code snippet is where the gpio arguement is passed to this page:
-=======
     It defines the arguments used in the page. If it is missing you will receive
     the error "NameError: name 'gpio' isn't defined" on the terminal console as you load
     this page in a browser.
 
     In microdot_server_pico.py the following code snippet is where the gpio argument is passed to this page:
->>>>>>> 729256a (Updated comments)
     
     async def index(request):
         return Template('index_api_client.html').render(gpio=LED_GPIO), {'Content-Type': 'text/html'}
@@ -76,13 +68,8 @@
 </head>
 
 <body>
-<<<<<<< HEAD
     <h1>Microdot RESTful API Example</h1>
     LED is connected to GPIO {{gpio}}<br>                                            <!--(11)-->
-=======
-    <h1>Microdot RESTful API Example</h1>    
-    LED is connected to GPIO {{gpio}}<br>                                            <!--(11)-->    
->>>>>>> 729256a (Updated comments)
     Brightness: <span id="brightnessLevel"></span>%<br>
     <input type="range" min="0" max="100" value="0" class="brightnessLevel">         <!--(12)-->
 </body>
