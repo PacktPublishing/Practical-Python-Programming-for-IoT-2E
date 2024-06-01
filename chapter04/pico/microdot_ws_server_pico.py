@@ -9,27 +9,28 @@ Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
 from microdot import Microdot, send_file                                             # (1)
 from microdot.utemplate import Template                                              # (2)
-from microdot.websocket import with_websocket                                        # (3)
+from microdot.websocket import with_websocket, WebSocketError                        # (3)
 from picowifi import connect_wifi                                                    # (4)
 from wifi_credentials import SSID, PASSWORD                                          # (5)
 from machine import Pin, PWM                                                         # (6)
+from json import loads, dumps                                                               # (X)
 
 # Variables
-LED_GPIO = 21                                                                        # (6)
+LED_GPIO = 21                                                                        # (X)
 state = {
     'level': 50 # % brightless of LED.
 }
 
 # Pin and PWM to control LED brightness.
-p = Pin(LED_GPIO, Pin.OUT)                                                           # (7)
+p = Pin(LED_GPIO, Pin.OUT)                                                           # (X)
 pwm = PWM(p)
 pwm.freq(8000)
 
 # Connect to WiFi and get Pico W's IP Address.
-ip = connect_wifi(SSID, PASSWORD)                                                    # (8)
+ip = connect_wifi(SSID, PASSWORD)                                                    # (X)
 
 
-def set_led_brightness(level):                                                       # (9)
+def set_led_brightness(level):                                                       # (X)
     """ Set LED brightness 0 - 100% """
 
     # Ensure level is within expected value range 0..100
@@ -68,31 +69,77 @@ else:
         if '..' in path:
             # Directory traversal is not allowed
             return 'Not found', 404
-        return send_file('static/' + path, max_age=86400)    
+        return send_file('static/' + path, max_age=86400)
 
 
-    # DEV
+    # Dictionary of connected clients so we can broadcast data to all clients.
+    websocket_clients = {}  # (host,port), web socket object.
+    
+
+    @app.route('/led')
     @with_websocket
-    async def echo(request, ws):
-        while True:
-            print(request)
-            print(data)
+    async def client_connection(request, ws):
+        """
+          Handle messages to control the LED.
+          This method is called once for each new client connection.
+        """
 
-            data = await ws.receive()
-            await ws.send(data)
-    # DEV
+        # New client connection, store client and websocket.
+        websocket_clients[request.client_addr] = ws
+        print("Client connected", request.client_addr)
+
+        while True:                                                                          # (X)
+            try: 
+                message_str = await ws.receive()
+            except WebSocketError as ex:
+                # Assume client has disconnected and break from while loop.
+                # print("Error", ex)
+                break
+
+            # Handle client message.
+            await handle_client_message(request, ws, message_str)
+
+        # We are now out of while True loop and can assume
+        # that client has disconnected.
+        print("Client disconnected:", request.client_addr)
+        del websocket_clients[request.client_addr]
 
 
-    @with_websocket
-    async def handle_state(request, ws):
-        """Handle 'led' messages to control the LED."""
+    async def broadcast_message(payload):
+        """
+        Broadcast payload to every connected client.
+        """
+
+        payload_str = dumps(payload) # dictionary to string
+
+        for addr, socket in websocket_clients.items():
+            try:
+                client_host = addr[0]
+                client_port = addr[1]                
+                print("Broadcasting {} to client {}:{}".format(payload_str, client_host, client_port))
+
+                await socket.send(payload_str)                                            # (13)
+            except WebSocketError as ex:
+                print("Sending error", ex)
+
+    
+    async def handle_client_message(request, ws, message_str):
+        """
+        Handle new message from a connected client.
+        """
         global state
 
-        data = await ws.receive()
-        print("Update LED from client {}: {} ".format(request.sid, data))
+        client_host = request.client_addr[0]
+        client_port = request.client_addr[1]
 
-        if 'level' in data and data['level'].isdigit():                                  # (10)
-            new_level = int(data['level']) # data comes in as str.
+        # Convert JSON string data into a dictionary.
+        data  = loads(message_str)
+
+        # Update LED Brightless if data includes 'level'
+        if 'level' in data:                                                            # (10)
+            print("Message {} from client {}:{}".format(message_str, client_host, client_port))
+
+            new_level = data['level']
 
             # Range validation and bounding.
             if new_level < 0:                                                            # (11)
@@ -100,87 +147,20 @@ else:
             elif new_level > 100:
                 new_level = 100
 
-        # Set PWM duty cycle to adjust brightness level.
-        # We are mapping input value 0-100 to 0-1
-        #Update to PiGPIO led.value = new_level / 100                                     # (12)
-        print("LED brightness level is " + str(new_level))
+            # Set PWM duty cycle to adjust brightness level.
+            # We are mapping input value 0-100 to 0-1
+            #Update to PiGPIO led.value = new_level / 100                               # (12)
+            print("LED brightness level is " + str(new_level))
 
-        state['level'] = new_level
+            state['level'] = new_level
 
-        # Broadcast new state to *every* connected connected (so they remain in sync).        
-        await ws.send(state)                                                             # (13)
-        #@TODO REMOVE emit("led", state, broadcast=True)
-
-
-
-
-# # Socket Callback Handlers
-# @socketio.on('connect')                                                              # (4)
-# def handle_connect():
-#     """Called when a remote web socket client connects to this server"""
-#     logger.info("Client {} connected.".format(request.sid))                          # (5)
-
-#     # Send initialising data to newly connected client.
-#     emit("led", state)                                                               # (6)
-
-
-# @socketio.on('disconnect')                                                           # (7)
-# def handle_disconnect():
-#     """Called with a client disconnects from this server"""
-#     logger.info("Client {} disconnected.".format(request.sid))
-
-
-# @socketio.on('led')                                                                  # (8)
-# def handle_state(data):                                                              # (9)
-#     """Handle 'led' messages to control the LED."""
-#     global state
-#     logger.info("Update LED from client {}: {} ".format(request.sid, data))
-
-#     if 'level' in data and data['level'].isdigit():                                  # (10)
-#         new_level = int(data['level']) # data comes in as str.
-
-#         # Range validation and bounding.
-#         if new_level < 0:                                                            # (11)
-#             new_level = 0
-#         elif new_level > 100:
-#             new_level = 100
-
-#         # Set PWM duty cycle to adjust brightness level.
-#         # We are mapping input value 0-100 to 0-1
-#         led.value = new_level / 100                                                  # (12)
-#         logger.info("LED brightness level is " + str(new_level))
-
-#         state['level'] = new_level
-
-#     # Broadcast new state to *every* connected connected (so they remain in sync).
-#     emit("led", state, broadcast=True)                                               # (13)
-
-
-
-
-
-
-    # HTTP GET route for getting LED state.
-    # This could alternativly be written as
-    # @app.route('/led', methods=['GET'])
-    @app.get('/led')                                                                 # (15)
-    async def led_get(request):
-        return state
-
-    # HTTP POST route for setting LED state.
-    # This could alternativly be written as
-    # @app.route('/led', methods=['POST'])
-    @app.post('/led')                                                                # (16)
-    async def led_post(request):
-        level = int(request.json['level']) # Brightness 0-100%
-
-        # If level is not within expected value range 0..100, return error
-        if level < 0 or  level > 100:
-            return "property 'level' expected to be between 0 and 100", 400
-
-        # Update state and set LED brightness.
-        state['level'] = level
-        set_led_brightness(level)
-        return state
+            # Broadcast new state to *every* connected connected (so they remain in sync).
+            await broadcast_message(state)
+        
+        else:
+            # no 'level' in data, so just send back current level to current client
+            payload_str = dumps(state) # dictionary to string
+            print("Sending {} to client {}:{}".format(payload_str, client_host, client_port))
+            await ws.send(payload_str)
 
     app.run(host=ip, debug=True)                                                     # (17)
