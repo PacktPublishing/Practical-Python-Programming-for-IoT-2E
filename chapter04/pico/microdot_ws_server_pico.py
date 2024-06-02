@@ -74,7 +74,7 @@ else:
 
     # Dictionary of connected clients so we can broadcast data to all clients.
     websocket_clients = {}  # (host,port), web socket object.
-    
+
 
     @app.route('/led')
     @with_websocket
@@ -147,12 +147,13 @@ else:
             elif new_level > 100:
                 new_level = 100
 
-            # Set PWM duty cycle to adjust brightness level.
-            # We are mapping input value 0-100 to 0-1
-            #Update to PiGPIO led.value = new_level / 100                               # (12)
             print("LED brightness level is " + str(new_level))
 
+            # Store brightness in memory.
             state['level'] = new_level
+
+            # Set brightness of physical LED.
+            set_led_brightness(new_level)
 
             # Broadcast new state to *every* connected connected (so they remain in sync).
             await broadcast_message(state)
