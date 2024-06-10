@@ -1,17 +1,3 @@
-{% args gpio %}
-<!-- 
-    The above {% args gpio %} is required by the utemplate engine used by Microdot,
-    and it must be the first line in the file.
-    
-    It defines the arguments used in the page. If it is missing you will receive
-    the error "NameError: name 'gpio' isn't defined" on the terminal console as you load
-    this page in a browser.
-
-    In microdot_server_pico.py the following code snippet is where the gpio argument is passed to this page:
-    
-    async def index(request):
-        return Template('index_ws_client.html').render(gpio=LED_GPIO), {'Content-Type': 'text/html'}
--->
 <!DOCTYPE html>
 <html>
 
@@ -47,9 +33,22 @@
                 $("input[type=range].brightnessLevel").val(data.level)
                 $("#brightnessLevel").html(data.level)
             }
+
+            if (data.gpio !== undefined) {
+                $("#gpio").html(data.gpio)
+            }
         })
 
         $(document).ready(function () {                                        // (X)
+
+            // @TODO REMOVE
+            // Make a HTTP GET RESTful request to server to get GPIO
+            // and update Web Page.
+            // $.get("/gpio", function (serverResponse, status) {                 // (X)
+            //     const gpio = serverResponse
+            //     $("#gpio").html(gpio)
+            // })
+
             // Event listener for Slider value changes.
             $("input[type=range].brightnessLevel").on('input', function () {
                 level = parseInt($(this).val())
@@ -62,8 +61,8 @@
 
 <body>
     <h1>Microdot Web Socket Example</h1>
-    LED is connected to GPIO {{gpio}}<br>
-    Connected to server: <span id="connected">No</span> <!-- (7) -->
+    LED is connected to GPIO <span id="gpio">-</span><br> <!-- (X) -->
+    Connected to server: <span id="connected">No</span> <!-- (X) -->
     <br><br>
     Brightness <span id="brightnessLevel"></span>:<br>
     <input type="range" min="0" max="100" value="0" class="brightnessLevel">

@@ -1,10 +1,10 @@
 """
-File: chapter03/flask_ws_server.py
+File: chapter04/flask_ws_server.py
 
 A Flask based Web Sockets server to control an LED built using Flask-SocketIO.
 
 Dependencies:
-  pip3 install gpiozero pigpio flask-socketio
+  pip3 install pigpio flask flask-socketio
 
 Built and tested with Python 3.7 on Raspberry Pi 4 Model B
 """

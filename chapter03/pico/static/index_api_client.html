@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Microdot RESTful API Example</title>
+    <script src="/static/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        // GET request to server to retrieve LED state.
+        function initialise() {                                                        // (1)
+            $.get("/led", function (serverResponse, status) {
+                // Initialises the value property of slider
+                // <input type="range" min="0" max="100" value="0" class="brightnessLevel">
+                $("input[type=range].brightnessLevel").val(serverResponse.level)
+
+                // Initialises the text in tag <span id="brightnessLevel">-</span>
+                $("#brightnessLevel").html(serverResponse.level)
+
+                // Initialises the text in tag <span id="gpio">-</span>
+                $("#gpio").html(serverResponse.gpio)
+
+                // Log response to console, example { "level": 50, "gpio" 21 }
+                console.log(serverResponse)
+            })
+        }
+
+        // POST Request to server to set LED state.
+        function postUpdate(payload) {
+            $.post({
+                url: "/led",
+                data: JSON.stringify(payload),
+                contentType: 'application/json; charset=utf-8'
+            }).done(
+                function (serverResponse, status) {
+                    console.log(serverResponse)
+                })
+        }
+
+        // Document Ready JQuery Function.
+        // This function is called with the Web Page is loaded and is ready to be used (interacted with).        
+        $(document).ready(function () {
+            let debounceTimer = null                                              // (2)
+
+            // Event listener for Slider value changes.
+            // .on('input', ...) will fire as the slider changes (= lots of network traffic, hence why we will debounce).
+            // Change to .on('change', ...) to fire only after mouse button is released.
+            // Note that on a Pico W, using 'input' may feel a little sluggish as you adjust the slider
+            // due to the amount of network traffic being generated. 
+            $("input[type=range].brightnessLevel").on('input', function () {     // (3)
+                brightness_level = $(this).val()
+                $("#brightnessLevel").html(brightness_level)
+                payload = { "level": brightness_level }
+
+                // Debounce calls to postUpdate() once every 250ms. 
+                // Calls to postUpdate() result in a RESTful API call to the 
+                // Pico Microdot server. If we do not debounce, as we move the UI slider a flood 
+                // of API calls makes the UI and LED rightness changes feel sluggish.
+                // An alternative approach could be to change .on('input') above to .on('change')
+                // which means the API call will only occur when you release the slider.
+                clearTimeout(debounceTimer)                                      // (4)
+                debounceTimer = setTimeout(function () {                         // (5)
+                    postUpdate(payload)
+                }, 100) // Debounce threshold 100 milliseconds.
+            })
+
+            // Initialise slider value form state on server.
+            initialise()                                                          // (6)
+        });
+
+    </script>
+</head>
+
+<body>
+    <h1>Microdot RESTful API Example</h1>
+    LED is connected to GPIO <span id="gpio">-</span><br>
+    Brightness: <span id="brightnessLevel">-</span>%<br>
+    <input type="range" min="0" max="100" value="0" class="brightnessLevel">
+</body>
+
+</html>

@@ -15,12 +15,11 @@
 * `pico` folder - Pico MicroPython Code
 
   * `microdot_api_server_pico.py` - RESTful API Server to control a LED
-  * `templates/index_api_client.html` - Web client for `microdot_api_server_pico.py`
+  * `static/index_api_client.html` - Web client for `microdot_api_server_pico.py`
   * `static/jquery.min.js` - JQuery JavaScript library for the web client
   * `picowifi.py` - Helper code for connecting Pico W to Wireless network
   * `wifi_credentials.example.py` - example WiFi credentials file
   * `microdot` - this folder contains the Microdot library and dependencies
-  * `utemplates` - this folder contains the utemplates library required my Microdot
 
 ### Datasheets
 

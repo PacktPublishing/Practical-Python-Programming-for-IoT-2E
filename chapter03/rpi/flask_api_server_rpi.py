@@ -23,7 +23,8 @@ logger.setLevel(logging.INFO) # Debugging for this file.
 # Global variables
 LED_GPIO = 21
 state = {                                                                            # (4)
-    'level': 50 # % brightless of LED.
+    'level': 50, # 0..100 % brightless of LED.
+    'gpio': LED_GPIO
 }
 
 pi = pigpio.pi()                                                                     # (5)
@@ -35,15 +36,16 @@ pi.set_PWM_frequency(LED_GPIO, 8000)                                            
 # calls to pi.set_PWM_dutycycle(GPIO_PIN, duty_cycle) now
 # take a value in the range 0 to 100 as the duty_cycle
 # parameter rather than the default range of 0..255.
-pi.set_PWM_range(LED_GPIO, 100)
+pi.set_PWM_range(LED_GPIO, 100)                                                      # (7)
 
 # Initialise LED brightness. Our PWM range is 0..100,
 # therefore our brightness level % maps directly.
-pi.set_PWM_dutycycle(LED_GPIO, state['level'])
+pi.set_PWM_dutycycle(LED_GPIO, state['level'])                                       # (8)
 
 # Flask & Flask-RESTful instance variables
 app = Flask(__name__) # Core Flask app.                                              # (9)
 api = Api(app) # Flask-RESTful extension wrapper                                     # (10)
+
 
 """
 Flask & Flask-Restful Related Functions
@@ -55,7 +57,7 @@ Flask & Flask-Restful Related Functions
 def index():
     """Make sure inde.html is in the templates folder
     relative to this Python file."""
-    return render_template('index_api_client.html', gpio=LED_GPIO)                   # (12)
+    return render_template('index_api_client.html', state=state)                     # (12)
 
 
 # Flask-restful resource definitions.

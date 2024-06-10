@@ -1,51 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Flask-RESTful API Example</title>
-    <script src="/static/jquery.min.js"></script>                                   <!--(1)-->
+    <script src="/static/jquery.min.js"></script>                                                  <!--(1)-->
     <script type="text/javascript">
 
-        // GET request to server to retrieve LED state.
-        function getState() {
-            $.get("/led", function (serverResponse, status) {                       // (2)
-                console.log(serverResponse)
-                updateControls(serverResponse)                                      // (3)
-            })
-        }
-
-
         // POST Request to server to set LED state.
-        function postUpdate(payload) {                                              // (4)
+        function postUpdate(payload) {                                                             // (2)
             $.post({
                 url: "/led",
                 data: JSON.stringify(payload),
                 contentType: 'application/json; charset=utf-8'
             }).done(
                 function (serverResponse, status) {
+                    // Server returns a JSON response like {level: 50, gpio: 21},                    
+                    // we'll just log it to the server.
                     console.log(serverResponse)
-                    updateControls(serverResponse)                                  // (5)
                 })
         }
 
-
-        function updateControls(data) {
-            $("input[type=range].brightnessLevel").val(data.level)                  // (6)
-            $("#brightnessLevel").html(data.level)
-        }
-
-
+        // Document Ready JQuery Function.
+        // This function is called with the Web Page is loaded and is ready to be used (interacted with).
         $(document).ready(function () {
             // Event listener for Slider value changes.
             // .on('input', ...) will fire as the slider changes (= lots of network traffic). Change to
             // .on('change', ...) to fire only after mouse button is released.
-            $("input[type=range].brightnessLevel").on('input', function () {        // (7)
-                brightness_level = $(this).val()                                    // (8)
-                payload = { "level": brightness_level }                             // (9)
+            $("input[type=range].brightnessLevel").on('input', function () {                       // (3)
+                brightness_level = $(this).val()                                                   // (4)
+                $("#brightnessLevel").html(brightness_level)                                       // (5)
+                payload = { "level": brightness_level }                                            // (6)
                 postUpdate(payload)
             })
-
-            // Initialise slider value form state on server.
-            getState()                                                              // (10)
         });
 
     </script>
@@ -53,9 +39,9 @@
 
 <body>
     <h1>Flask-RESTful API Example</h1>
-    LED is connected to GPIO {{gpio}}<br> <!--(11)-->
-    Brightness: <span id="brightnessLevel"></span>%<br>
-    <input type="range" min="0" max="100" value="0" class="brightnessLevel">        <!--(12)-->
+    LED is connected to GPIO {{state.gpio}}<br>                                                    <!--(7)-->
+    Brightness: <span id="brightnessLevel">{{state.level}}</span>%<br>
+    <input type="range" min="0" max="100" value="{{state.level}}" class="brightnessLevel">         <!--(8)-->
 </body>
 
 </html>
