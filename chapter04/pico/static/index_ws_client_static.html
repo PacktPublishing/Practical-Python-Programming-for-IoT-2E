@@ -6,52 +6,46 @@
     <script src="/static/jquery.min.js"></script>
     <script type="text/javascript">
 
-        const socket = new WebSocket('ws://' + location.host + '/led')           // (X)
+        const socket = new WebSocket('ws://' + location.host + '/state')             // (1)
 
-        socket.addEventListener('open', ev => {                                // (X)
+        // Web socket opened (connected) handler.
+        socket.addEventListener('open', ev => {
             console.log("Connected to Server")
             $("#connected").html("Yes")
-
-            // Initialise web page controls.
-            // Send empty JSON object and server will respond with the current.
-            // brightness level.
-            socket.send("{}")
         })
 
-        socket.addEventListener('closed', ev => {                                // (X)
+        // Web socket closed (disconnected) handler.
+        socket.addEventListener('closed', ev => {
             console.log("Disconnected from the Server")
             $("#connected").html("No")
         })
 
-        socket.addEventListener('message', ev => {                                // (X)
+        // Web Socket message handler.
+        socket.addEventListener('message', ev => {
             dataFromServer = ev.data
             console.log(dataFromServer)
 
-            data = JSON.parse(dataFromServer) // string to JSON Object.
+            // string to JSON Object.
+            data = JSON.parse(dataFromServer)
 
+            // Update brightness % and slider on web page.
             if (data.level !== undefined) {
                 $("input[type=range].brightnessLevel").val(data.level)
                 $("#brightnessLevel").html(data.level)
             }
 
+            // Update GPIO on web page
             if (data.gpio !== undefined) {
                 $("#gpio").html(data.gpio)
             }
         })
 
-        $(document).ready(function () {                                        // (X)
-
-            // @TODO REMOVE
-            // Make a HTTP GET RESTful request to server to get GPIO
-            // and update Web Page.
-            // $.get("/gpio", function (serverResponse, status) {                 // (X)
-            //     const gpio = serverResponse
-            //     $("#gpio").html(gpio)
-            // })
+        $(document).ready(function () {
 
             // Event listener for Slider value changes.
             $("input[type=range].brightnessLevel").on('input', function () {
                 level = parseInt($(this).val())
+                $("#brightnessLevel").html(level)
                 payload = JSON.stringify({ "level": level })
                 socket.send(payload)
             })
@@ -61,8 +55,8 @@
 
 <body>
     <h1>Microdot Web Socket Example</h1>
-    LED is connected to GPIO <span id="gpio">-</span><br> <!-- (X) -->
-    Connected to server: <span id="connected">No</span> <!-- (X) -->
+    LED is connected to GPIO <span id="gpio">-</span><br>
+    Connected to server: <span id="connected">No</span>
     <br><br>
     Brightness <span id="brightnessLevel"></span>:<br>
     <input type="range" min="0" max="100" value="0" class="brightnessLevel">

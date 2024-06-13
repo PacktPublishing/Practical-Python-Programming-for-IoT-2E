@@ -10,9 +10,8 @@ Built and tested with Python 3.7 on Raspberry Pi 4 Model B
 """
 import logging
 from flask import Flask, request, render_template
-from flask_socketio import SocketIO, send, emit                                      # (1)
-from gpiozero import PWMLED, Device
-from gpiozero.pins.pigpio import PiGPIOFactory
+from flask_socketio import SocketIO, send, emit                                     # (1)
+import pigpio
 
 
 # Initialize Logging
@@ -21,32 +20,33 @@ logger = logging.getLogger('main')  # Logger for this module
 logger.setLevel(logging.INFO) # Debugging for this file.
 
 
-# Initialize GPIO
-Device.pin_factory = PiGPIOFactory() #set gpiozero to use pigpio by default.
-
-
 # Flask & Flask Restful Global Variables.
 app = Flask(__name__) # Core Flask app.
 socketio = SocketIO(app) # Flask-SocketIO extension wrapper.                         # (2)
 
 
 # Global variables
-LED_GPIO_PIN = 21
+LED_GPIO = 21
 led = None # PWMLED Instance. See init_led()
 state = {
-    'level': 50 # 0..100 % brightless of LED.
+    'level': 50, # 0..100 % brightless of LED.
+    'gpio': LED_GPIO
 }
 
+pi = pigpio.pi() 
 
-@TODO - CHANGE TO PIGPIO
-"""
-GPIO Related Functions
-"""
-def init_led():
-    """Create and initialise PWMLED Object"""
-    global led
-    led =  PWMLED(LED_GPIO_PIN)
-    led.value = state['level'] / 100
+# 8000 max hardware timed frequency by default pigpiod configuration.
+pi.set_PWM_frequency(LED_GPIO, 8000)
+
+# We set the range to 0..100 to mimic 0%..100%. This means
+# calls to pi.set_PWM_dutycycle(GPIO_PIN, duty_cycle) now
+# take a value in the range 0 to 100 as the duty_cycle
+# parameter rather than the default range of 0..255.
+pi.set_PWM_range(LED_GPIO, 100)
+
+# Initialise LED brightness. Our PWM range is 0..100,
+# therefore our brightness level % maps directly.
+pi.set_PWM_dutycycle(LED_GPIO, state['level'])
 
 
 """
@@ -59,7 +59,7 @@ Flask & Flask-SocketIO Related Functions
 def index():
     """Make sure index_ws_client.html is in the templates folder
     relative to this Python file."""
-    return render_template('index_ws_client.html', pin=LED_GPIO_PIN)                 # (3)
+    return render_template('index_ws_client.html')
 
 
 # Flask-SocketIO Callback Handlers
@@ -68,8 +68,8 @@ def handle_connect():
     """Called when a remote web socket client connects to this server"""
     logger.info("Client {} connected.".format(request.sid))                          # (5)
 
-    # Send initialising data to newly connected client.
-    emit("led", state)                                                               # (6)
+    # Send initializing data to newly connected client.
+    emit("state", state)                                                             # (6)
 
 
 @socketio.on('disconnect')                                                           # (7)
@@ -78,7 +78,7 @@ def handle_disconnect():
     logger.info("Client {} disconnected.".format(request.sid))
 
 
-@socketio.on('led')                                                                  # (8)
+@socketio.on('state')                                                                # (8)
 def handle_state(data):                                                              # (9)
     """Handle 'led' messages to control the LED."""
     global state
@@ -92,20 +92,15 @@ def handle_state(data):                                                         
             new_level = 0
         elif new_level > 100:
             new_level = 100
-
+       
         # Set PWM duty cycle to adjust brightness level.
-        # We are mapping input value 0-100 to 0-1
-        led.value = new_level / 100                                                  # (12)
-        logger.info("LED brightness level is " + str(new_level))
-
         state['level'] = new_level
+        pi.set_PWM_dutycycle(LED_GPIO, state['level'])
+        logger.info("LED brightness level is " + str(state['level']))
 
-    # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("led", state, broadcast=True)                                               # (13)
 
-
-# Initialise Module
-init_led()
+    # Broadcast new state to *every* connected (so they remain in sync).
+    emit("state", state, broadcast=True)                                             # (13)
 
 
 if __name__ == '__main__':

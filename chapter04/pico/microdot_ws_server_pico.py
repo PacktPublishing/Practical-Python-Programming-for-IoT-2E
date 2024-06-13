@@ -1,5 +1,5 @@
 """
-chapter03/pico/microdot_ws_server_pico.py
+chapter04/pico/microdot_ws_server_pico.py
 
 Microdot Web Socket server example with Pico & MicroPython.
 
@@ -7,30 +7,30 @@ $ mpremote mount . run microdot_ws_server_pico.py
 
 Built and tested with MicroPython Firmware 1.22.1 on Raspberry Pi Pico W
 """
-from microdot import Microdot, send_file                                             # (1)
-from microdot.utemplate import Template                                              # (2)
-from microdot.websocket import with_websocket, WebSocketError                        # (3)
-from picowifi import connect_wifi                                                    # (4)
-from wifi_credentials import SSID, PASSWORD                                          # (5)
-from machine import Pin, PWM                                                         # (6)
-from json import loads, dumps                                                               # (X)
+from microdot import Microdot, send_file
+from microdot.websocket import with_websocket, WebSocketError                        # (1)
+from picowifi import connect_wifi
+from wifi_credentials import SSID, PASSWORD
+from machine import Pin, PWM
+from json import loads, dumps                                                        # (2)
 
 # Variables
-LED_GPIO = 21                                                                        # (X)
+LED_GPIO = 21
 state = {
-    'level': 50 # % brightless of LED.
+    'level': 50, # % brightless of LED.
+    'gpio': LED_GPIO
 }
 
 # Pin and PWM to control LED brightness.
-p = Pin(LED_GPIO, Pin.OUT)                                                           # (X)
+p = Pin(LED_GPIO, Pin.OUT)
 pwm = PWM(p)
 pwm.freq(8000)
 
 # Connect to WiFi and get Pico W's IP Address.
-ip = connect_wifi(SSID, PASSWORD)                                                    # (X)
+ip = connect_wifi(SSID, PASSWORD)
 
 
-def set_led_brightness(level):                                                       # (X)
+def set_led_brightness(level):
     """ Set LED brightness 0 - 100% """
 
     # Ensure level is within expected value range 0..100
@@ -45,104 +45,101 @@ def set_led_brightness(level):                                                  
 
 
 # Configure Microdot routes and start server if we have a WiFi connection.
-if not ip:                                                                           # (10)
+if not ip:
     print(f"Unable to connect to network.")
 
 else:
     # Initialise LED
-    set_led_brightness(state['level'])                                               # (11)
+    set_led_brightness(state['level'])
 
     # Create Microdot server instance
-    app = Microdot()                                                                 # (12)
+    app = Microdot()
 
-    # HTTP GET default route.
-    # This could alternativly be written as @app.route('/', methods=['GET'])
-    @app.get('/')                                                                    # (13)
-    async def index(request):
-        return Template('index_ws_client.html').render(gpio=LED_GPIO), {'Content-Type': 'text/html'}
-    
+    """
+    RESTFul Routes
+    """
+
     # HTTP GET route for serving static content.
     # This could alternativly be written as
     # @app.route('/static/<path:path>', methods=['GET'])
-    @app.get('/static/<path:path>')                                                  # (14)
+    @app.get('/static/<path:path>')
     async def static(request, path):
         if '..' in path:
             # Directory traversal is not allowed
             return 'Not found', 404
-        return send_file('static/' + path, max_age=86400)
+        return send_file('static/' + path)
+    
 
+    # HTTP GET route to return a static version of the web page.
+    # This could alternativly be written as @app.route('/', methods=['GET'])
+    @app.get('/')
+    async def index(request):
+        return send_file('static/index_ws_client_static.html')
+
+
+    """
+    Web Sockets (using the Microdot Web Socket Extension)
+    """
 
     # Dictionary of connected clients so we can broadcast data to all clients.
-    websocket_clients = {}  # (host,port), web socket object.
+    websocket_clients = {}  # (host,port), web socket object.                        # (3)
 
-
-    @app.route('/led')
-    @with_websocket
-    async def client_connection(request, ws):
+    # Web Socket entry point defined at /.
+    # In Web Page (JavaScript) we connect to the Web Socket using:
+    #   const socket = new WebSocket('ws://' + location.host + '/state')
+    @app.route('/state')                                                             # (4)
+    @with_websocket                                                                  # (5)
+    async def client_connection(request, websocket):                                 # (6)
         """
           Handle messages to control the LED.
           This method is called once for each new client connection.
         """
 
-        # New client connection, store client and websocket.
-        websocket_clients[request.client_addr] = ws
+        # New client connection, store client and websocket so we can broadcast
+        # to all connected clients later on.
+        websocket_clients[request.client_addr] = websocket                           # (7)
         print("Client connected", request.client_addr)
 
-        while True:                                                                          # (X)
+        # On connection, send current LED brightness and GPIO to client.
+        payload_str = dumps(state) # dictionary to JSON string                       # (8)
+        await websocket.send(payload_str)                                            # (9)
+
+        while True:                                                                  # (10)
             try: 
-                message_str = await ws.receive()
+                message_str = await websocket.receive()                              # (11)
             except WebSocketError as ex:
                 # Assume client has disconnected and break from while loop.
-                # print("Error", ex)
-                break
+                # print("WebSocketError (receive)", ex)
+                break                                                                # (12)
 
-            # Handle client message.
-            await handle_client_message(request, ws, message_str)
+            # Handle Web Socket client message.
+            await handle_message(request, websocket, message_str)                    # (13)
 
         # We are now out of while True loop and can assume
         # that client has disconnected.
         print("Client disconnected:", request.client_addr)
-        del websocket_clients[request.client_addr]
+        del websocket_clients[request.client_addr]                                   # (14)
 
-
-    async def broadcast_message(payload):
-        """
-        Broadcast payload to every connected client.
-        """
-
-        payload_str = dumps(payload) # dictionary to string
-
-        for addr, socket in websocket_clients.items():
-            try:
-                client_host = addr[0]
-                client_port = addr[1]                
-                print("Broadcasting {} to client {}:{}".format(payload_str, client_host, client_port))
-
-                await socket.send(payload_str)                                            # (13)
-            except WebSocketError as ex:
-                print("Sending error", ex)
-
-    
-    async def handle_client_message(request, ws, message_str):
+   
+    async def handle_message(request, websocket, message_str):                       # (15)
         """
         Handle new message from a connected client.
         """
         global state
 
-        client_host = request.client_addr[0]
-        client_port = request.client_addr[1]
+        # Convert JSON string data into a Dictionary.
+        data  = loads(message_str)                                                   # (16)
 
-        # Convert JSON string data into a dictionary.
-        data  = loads(message_str)
-
-        # Update LED Brightless if data includes 'level'
-        if 'level' in data:                                                            # (10)
+        # Update LED Brightness if data includes 'level'
+        if 'level' in data:                                                          # (17)
+            client_host = request.client_addr[0]
+            client_port = request.client_addr[1]
             print("Message {} from client {}:{}".format(message_str, client_host, client_port))
 
             new_level = data['level']
 
             # Range validation and bounding.
-            if new_level < 0:                                                            # (11)
+            if new_level < 0:
                 new_level = 0
             elif new_level > 100:
                 new_level = 100
@@ -155,13 +152,35 @@ else:
             # Set brightness of physical LED.
             set_led_brightness(new_level)
 
-            # Broadcast new state to *every* connected connected (so they remain in sync).
-            await broadcast_message(state)
-        
-        else:
-            # no 'level' in data, so just send back current level to current client
-            payload_str = dumps(state) # dictionary to string
-            print("Sending {} to client {}:{}".format(payload_str, client_host, client_port))
-            await ws.send(payload_str)
+            # Broadcast new state to every other connected client.
+            await broadcast_message(state, websocket)                                # (18)
 
-    app.run(host=ip, debug=True)                                                     # (17)
+
+    async def broadcast_message(message, excludeWebsocket = None):                   # (19)
+        """
+        Broadcast payload to every connected Web Socket client
+        except 'excludeWebsocket'
+        """
+
+        message_str = dumps(message) # dictionary to JSON string
+
+        # Loop through each connected Web Socket client and send payload.
+        for addr, websocket in websocket_clients.items():                            # (20)
+
+            if websocket == excludeWebsocket:                                        # (21)
+                # Not sending to 'excludeWebsocket'. We can use excludeWebsocket
+                # to prevent sending data back to the originating Web Socket
+                # client during a broadcast.
+                continue
+
+            try:
+                client_host = addr[0]
+                client_port = addr[1]                
+                print("Broadcasting {} to client {}:{}".format(message_str, client_host, client_port))
+
+                await websocket.send(message_str)                                    # (22)
+            except WebSocketError as ex:
+                print("WebSocketError (send)", ex)            
+
+
+    app.run(host=ip, debug=True)
