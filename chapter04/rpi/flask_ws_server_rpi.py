@@ -1,12 +1,12 @@
 """
-File: chapter04/flask_ws_server.py
+chapter04/rpi/flask_ws_server_rpi.py
 
 A Flask based Web Sockets server to control an LED built using Flask-SocketIO.
 
 Dependencies:
   pip3 install pigpio flask flask-socketio
 
-Built and tested with Python 3.7 on Raspberry Pi 4 Model B
+Built and tested with Python 3.11.22 on Raspberry Pi 5
 """
 import logging
 from flask import Flask, request, render_template

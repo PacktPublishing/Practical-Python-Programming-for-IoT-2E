@@ -1,5 +1,5 @@
 """
-chapter03/rpi/flask_api_server.py
+chapter03/rpi/flask_api_server_rpi.py
 
 Flask-RESTFul API Server example with Raspberry Pi & Python.
 
