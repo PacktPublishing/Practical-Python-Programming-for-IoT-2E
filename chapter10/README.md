@@ -2,7 +2,8 @@
 
 ## Chapter 10 - Measuring Temperature, Humidity, Moisture and Light Levels
 
-### Source Code
+* `breadboard_layouts.fzz` - Fritzing breadboard layouts circuits for Raspberry Pi &amp; Pico
+* `breadboard_layouts.png` - Breadboard layouts circuits for Raspberry Pi &amp; Pico
 
 * `rpi` folder - Raspberry Pi Python Code
 
@@ -45,3 +46,7 @@ None
 ### Post Publication Updates and Errata
 
 None
+
+### Breadboard Layouts
+
+![Breadboard Layouts](./breadboard_layouts.png)
