@@ -1,0 +1,2 @@
+SSID="X27"
+PASSWORD="smudgeTHEcatLIVES@20RG!2"
