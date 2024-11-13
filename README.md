@@ -6,7 +6,9 @@ The code repository for the _1st Edition_ can be found [here](https://github.com
 
 ## Repository Contents
 
-### [Chapter 3](chapter03) - Networking with RESTful APIs
+### [Chapter 3](chapter03) - Distributed Systems with MQTT
+
+### [Chapter 3](chapter03) - Networking with MQTT and the Mosquitto MQTT Broker
 
 ### [Chapter 7](chapter07) - Electronics 101 for the Software Engineer
 

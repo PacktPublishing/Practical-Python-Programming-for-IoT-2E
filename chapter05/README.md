@@ -1,6 +1,6 @@
 # Practical Python Programming for IoT 2nd Edition
 
-## Chapter 5 - Distributed Systems with Python and MQTT
+## Chapter 5 - Networking with MQTT and the Mosquitto MQTT Broker
 
 * `rpi` folder - Raspberry Pi Python Code
 
