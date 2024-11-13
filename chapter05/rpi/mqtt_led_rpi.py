@@ -13,20 +13,20 @@ import signal
 import sys
 import json
 import pigpio
-import paho.mqtt.client as mqtt                                                                # (1)
+import paho.mqtt.client as mqtt                                               # (1)
 
 # Initialize Logging
 logging.basicConfig(level=logging.WARNING)  # Global logging configuration
-logger = logging.getLogger("main")  # Logger for this module
-logger.setLevel(logging.INFO) # Debugging for this file.
+logger = logging.getLogger("main")          # Logger for this module
+logger.setLevel(logging.INFO)               # Debugging for this file.
 
 # Global Variables
 LED_GPIO = 21
-BROKER_HOST = "localhost"                                                                       # (2)
+BROKER_HOST = "localhost"                                                     # (2)
 BROKER_PORT = 1883
-CLIENT_ID = "LEDClient-rPI"                                                                     # (3)
-TOPIC = "led"                                                                                   # (4)
-client = None  # MQTT client instance. See init_mqtt()                                          # (5)
+CLIENT_ID = "LEDClient-rPI"                                                   # (3)
+TOPIC = "led"                                                                 # (4)
+client = None  # MQTT client instance. See init_mqtt()                        # (5)
 
 # Initialize GPIO
 pi = pigpio.pi() 
@@ -49,7 +49,7 @@ pi.set_PWM_dutycycle(LED_GPIO, 0) # Start with 0 dutycycle (LED off)
 GPIO Related Functions
 """
 
-def set_led_brightness(data):                                                                  # (6)  @FIXME fn renamed, fix in book
+def set_led_brightness(data):                                                 # (6)
     """Set LED State to one of On, Blink or Off (Default)
       'data' expected to be a dictionary with the following format:
       {
@@ -78,13 +78,13 @@ def set_led_brightness(data):                                                   
 """
 MQTT Related Functions and Callbacks
 """
-def on_connect(client, userdata, flags, reason_code, properties):                              # (7)
+def on_connect(client, userdata, flags, reason_code, properties):             # (7)
     """on_connect is called when our program connects to the MQTT Broker.
        Always subscribe to topics in an on_connect() callback.
        This way if a connection is lost, the automatic
        re-connection will also results in the re-subscription occurring."""
 
-    if reason_code == 0:                                                                       # (8)
+    if reason_code == 0:                                                      # (8)
         # 0 = successful connection
         logger.info("Connected to MQTT Broker")
     else:
@@ -92,29 +92,30 @@ def on_connect(client, userdata, flags, reason_code, properties):               
         logger.error("Failed to connect to MQTT Broker: " + mqtt.connack_string(reason_code))
 
     # Subscribe to the topic for LED level changes.
-    client.subscribe(TOPIC, qos=2)                                                             # (9)
+    client.subscribe(TOPIC, qos=2)                                            # (9)
 
 
 
-def on_disconnect(client, userdata, flags, reason_code, properties):                           # (10)
+def on_disconnect(client, userdata, flags, reason_code, properties):          # (10)
     """Called disconnects from MQTT Broker."""
     logger.error("Disconnected from MQTT Broker: " + mqtt.connack_string(reason_code))
 
 
 
-def on_message(client, userdata, msg):                                                         # (11)
+def on_message(client, userdata, msg):                                        # (11)
     """Callback called when a message is received on a subscribed topic."""
     logger.info("Received message for topic {}: {}".format(msg.topic, msg.payload))
 
-                                                                                    # @FIXME - Code reaggange in book
-                                                                                    # @FIXME - #13 removed
-    try:
-        data = json.loads(msg.payload.decode("UTF-8"))                                         # (12)
-        set_led_brightness(data)                                                               # (XX) @FIXME fn name changed, fix in book
+    try:                                                  
+        data = json.loads(msg.payload.decode("UTF-8"))                        # (12)
+
+        if msg.topic == TOPIC:                                                # (13)
+            set_led_brightness(data)                                          # (14)
+        else:
+            logger.error("Unhandled message topic {} with payload " + str(msg.topic, msg.payload))
 
     except json.JSONDecodeError as e:
         logger.error("JSON Decode Error: " + msg.payload.decode("UTF-8"))
-
 
 
 def signal_handler(sig, frame):
@@ -137,31 +138,30 @@ def init_mqtt():
     # "clean_session=True" means we don"t want Broker to retain QoS 1 and 2 messages
     # for us when we"re offline. You"ll see the "{"session present": 0}" logged when
     # connected.
-    client = mqtt.Client(                                                                      # (15)
+    client = mqtt.Client(                                                     # (15)
         callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
         client_id=CLIENT_ID,
         clean_session=False)
 
     # Route Paho logging to Python logging.
-    client.enable_logger()                                                                     # (16)
+    client.enable_logger()                                                    # (16)
 
     # Setup callbacks
-    client.on_connect = on_connect                                                             # (17)
+    client.on_connect = on_connect                                            # (17)
     client.on_disconnect = on_disconnect
     client.on_message = on_message
 
     # Connect to Broker.
-    client.connect(BROKER_HOST, BROKER_PORT)                                                   # (18)
+    client.connect(BROKER_HOST, BROKER_PORT)                                  # (18)
 
 
-
-# Initialise MQTT                           @FIXME comment changed, fix in book
+# Initialise MQTT
 init_mqtt()
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, signal_handler)  # Capture Control + C                        # (19)
+    signal.signal(signal.SIGINT, signal_handler)  # Capture Control + C       # (19)
     logger.info("Listening for messages on topic '" + TOPIC + "'. Press Control + C to exit.")
 
-    client.loop_start()                                                                        # (20)
+    client.loop_start()                                                       # (20)
     signal.pause()
